@@ -3,7 +3,11 @@ name = "sjsu-cmpe-220-cpu-simulator"
 version = "0.1.0"
 description = "CPU simulator for SJSU 2026F CMPE 220 System Software instructed by Ishie Eswar."
 authors = [
-    {name = "Chris Carl",email = "chris.carl@sjsu.edu"}
+    {name = "Chris Carl",email = "chris.carl@sjsu.edu"},
+    {name = "Chris Carl",email = "harsha.krishnaswamy@sjsu.edu"},
+    {name = "Chris Carl",email = "donovan.burk@sjsu.edu"},
+    {name = "Chris Carl",email = "jehu.zepeda-silva@sjsu.edu"},
+    {name = "Chris Carl",email = "mark.haiko@sjsu.edu"}
 ]
 license = {text = "MIT"}
 readme = "README.md"

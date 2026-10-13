@@ -44,3 +44,10 @@ sudo apt install build-essential -y
 # build n run
 make -f ./Makefile
 ```
+
+# Authors
+- Chris Carl <chris.carl@sjsu.edu>
+- Harsha Krishnaswamy <harsha.krishnaswamy@sjsu.edu>
+- Donovan Burk <donovan.burk@sjsu.edu>
+- Jehu Zepeda-Silva <jehu.zepeda-silva@sjsu.edu>
+- Mark Haiko <mark.haiko@sjsu.edu>
