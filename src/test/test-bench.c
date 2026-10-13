@@ -21,48 +21,38 @@ int test_bench_gates() {
     bool x[2] = {0, 1};
     bool y[2] = {0, 1};
     bool z[2] = {0, 1};
-    printf("    - AND\n");
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < 2; j++) {
-            printf("        x(%d) & y(%d) = %d\n", x[i], y[j], AND(x[i], y[j]));
-        }
-    }
-    printf("    - OR\n");
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < 2; j++) {
-            printf("        x(%d) | y(%d) = %d\n", x[i], y[j], OR(x[i], y[j]));
-        }
-    }
-    printf("    - XOR\n");
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < 2; j++) {
-            printf("        x(%d) opllus y(%d) = %d\n", x[i], y[j], XOR(x[i], y[j]));
-        }
-    }
-    printf("    - NOT\n");
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < 2; j++) {
-            printf("        ^x(%d)       = %d\n", x[i], NOT(x[i]));
-        }
-    }
-    printf("    - ASSIGN\n");
     bool a = 0;
     bool b = 1;
     bool c = 0;
-    printf("        -   a=%d, b=%d, c=%d\n", a, b, c);
+    bool and, or, nand, nor, xor, xnor;
+
+    printf("    - 2-input gates\n");
+    printf("        |x|y|AND|OR|NAND|NOR|XOR|XNOR|\n");
+    printf("        |-|-|---|--|----|---|---|----|\n");
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            a = x[i], b = y[j];
+            and = AND(a, b), or = OR(a, b), nand = NAND(a, b), nor = NOR(a, b), xor = XOR(a, b), xnor = XNOR(a, b);
+            printf("        |%d|%d|%d  |%d |%d   |%d  |%d  |%d   |\n", a, b, and, or, nand, nor, xor, xnor);
+        }
+    }
+
+    printf("    - ASSIGN\n");
+    a = 0, b = 1, c = 0;
+    printf("        - pre:  a=%d, b=%d, c=%d\n", a, b, c);
     ASSIGN(&a, &b);  // a <- 1
     ASSIGN(&b, &c);  // b <- 0
     ASSIGN(&c, &a);  // c <- 1
-    printf("        - a=%d, b=%d, c=%d\n", a, b, c);
+    printf("        - post: a=%d, b=%d, c=%d\n", a, b, c);
 
     printf("    - 3-input gates\n");
-    printf("        |x|y|z|and|or|nand|nor|xor|xnor|\n");
+    printf("        |x|y|z|AND|OR|NAND|NOR|XOR|XNOR|\n");
     printf("        |-|-|-|---|--|----|---|---|----|\n");
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
             for (int k = 0; k < 2; k++) {
-                    bool a = x[i], b = y[j], c = z[k];
-                    bool and = AND3(a, b, c), or = OR3(a, b, c), nand = NAND3(a, b, c), nor = NOR3(a, b, c), xor = XOR3(a, b, c), xnor = XNOR3(a, b, c);
+                    a = x[i], b = y[j], c = z[k];
+                    and = AND3(a, b, c), or = OR3(a, b, c), nand = NAND3(a, b, c), nor = NOR3(a, b, c), xor = XOR3(a, b, c), xnor = XNOR3(a, b, c);
                     printf("        |%d|%d|%d|%d  |%d |%d   |%d  |%d  |%d   |\n", a, b, c, and, or, nand, nor, xor, xnor);
             }
         }

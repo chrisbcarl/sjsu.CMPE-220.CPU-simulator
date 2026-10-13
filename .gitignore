@@ -1,5 +1,6 @@
 # PROJECT SPECIFIC
-dist
+bin/**
+dist/**
 ignoreme**
 **/venv
 **.log
