@@ -16,7 +16,7 @@ INC_DIRS := $(sort $(dir $(HDRS)))
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 BUILD_DIR := $(MAKEFILE_DIR)/build
-TARGET := $(MAKEFILE_DIR)/bin/main.exe
+TARGET := $(MAKEFILE_DIR)/bin/main
 
 OBJS := $(patsubst $(MAKEFILE_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 DEPS := $(OBJS:.o=.d)
