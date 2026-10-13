@@ -1,3 +1,18 @@
+# PROJECT SPECIFIC
+dist
+ignoreme**
+**/venv
+**.log
+**.pkl
+# latex
+**.aux
+**.data.minted
+*.bbl
+*.blg
+*.out
+*.jar
+
+
 # Prerequisites
 *.d
 
