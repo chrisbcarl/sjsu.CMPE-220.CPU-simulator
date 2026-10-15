@@ -1,6 +1,7 @@
 /*
 make -f CMPE-220/assignments/project/Makefile
 
+2026-10-14 18:51 - main - chriscarl - added test_bench_cpu_simple, worked without compilation or runtime errors first try, kinda strange that it didn't have anything.
 */
 
 
@@ -26,6 +27,7 @@ int main(int argc, char** argv) {
     die_on_failure(test_bench_logic);
     die_on_failure(test_bench_registers);
     die_on_failure(test_bench_alu);
+    die_on_failure(test_bench_cpu_simple);
 
     /*
     should be something like
