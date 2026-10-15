@@ -300,3 +300,12 @@ int test_bench_alu() {
 
     return EXIT_SUCCESS;
 }
+
+int test_bench_cpu_simple() {
+    printf("--------------------------------------------------------------------------------\n");
+    printf("TEST BENCH CPU SIMPLE\n");
+    printf("    - cpu_create(32, 16, 4, 256)\n");
+    CPU cpu = cpu_create(32, 16, 4, 256);
+
+    return EXIT_SUCCESS;
+}
