@@ -29,4 +29,4 @@ jobs:
         pwd
     - name: make all
       run: |
-        make -f ./makefile
+        make -f ./Makefile
