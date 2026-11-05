@@ -21,5 +21,12 @@ jobs:
     #   run: make check
     # - name: make distcheck
     #   run: make distcheck
+    - name: inspect
+      run: |
+        whoami
+        uname -a
+        ls -lah
+        pwd
     - name: make all
-      run: make -f ./makefile
+      run: |
+        make -f ./makefile
