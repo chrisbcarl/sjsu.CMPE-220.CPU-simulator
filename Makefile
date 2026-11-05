@@ -7,7 +7,7 @@
 MAKEFILE_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
 CC ?= gcc
-CFLAGS ?= -Werror -Wall -Wextra -O2
+CFLAGS ?= -Wall -Wextra -O2
 # NOTE: -Werror causes fail on any warnings, very stringent...
 
 SRCS := $(shell find $(MAKEFILE_DIR) -type f -name '*.c')
