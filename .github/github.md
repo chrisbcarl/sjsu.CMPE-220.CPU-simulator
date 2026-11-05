@@ -1,7 +1,6 @@
 # GitHub
 Doc about GitHub, tips, tricks, techniques, etc.
 
-
 # Automated Issue Creation
 ```powershell
 choco install gh -y
@@ -47,8 +46,6 @@ python "bootstrap/apps/github-issue-creator/github-issue-creator.py" `
 - ReverseBack2
 - jehuzepeda-silva-rgb
 - Bageldorf
-
-
 
 # Milestones
 |milestone|description         |due date         |

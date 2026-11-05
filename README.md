@@ -67,13 +67,13 @@ make -f ./Makefile
 ```
 
 # Authors
-|Name               |Email                         |Github Username           |Contributions|
-|---                |---                           |---                       |---          |
-|Chris Carl         |<chris.carl@sjsu.edu>         |chrisbcarl, chriscarl-sjsu|             |
-|Harsha Krishnaswamy|<harsha.krishnaswamy@sjsu.edu>|harshakrishna15           |             |
-|Donovan Burk       |<donovan.burk@sjsu.edu>       |ReverseBack2              |             |
-|Jehu Zepeda-Silva  |<jehu.zepeda-silva@sjsu.edu>  |jehuzepeda-silva-rgb      |             |
-|Mark Haiko         |<mark.haiko@sjsu.edu>         |Bageldorf                 |             |
+|Name               |Email                         |Github Username           |Contributions                                        |
+|---                |---                           |---                       |---                                                  |
+|Chris Carl         |<chris.carl@sjsu.edu>         |chrisbcarl, chriscarl-sjsu|Project management, dev ops, code architecture design|
+|Harsha Krishnaswamy|<harsha.krishnaswamy@sjsu.edu>|harshakrishna15           |                                                     |
+|Donovan Burk       |<donovan.burk@sjsu.edu>       |ReverseBack2              |                                                     |
+|Jehu Zepeda-Silva  |<jehu.zepeda-silva@sjsu.edu>  |jehuzepeda-silva-rgb      |                                                     |
+|Mark Haiko         |<mark.haiko@sjsu.edu>         |Bageldorf                 |                                                     |
 
 
 
@@ -83,5 +83,5 @@ All AI use is declared to be ethical and deliberate. We do not and will not use 
 Unless specified, all disclaimed items were **modified** after content and not included in this project verbatim.
 
 The following items are declared to have been assisted by AI:
-- Makefile
+- Makefile (Chris Carl)
 
