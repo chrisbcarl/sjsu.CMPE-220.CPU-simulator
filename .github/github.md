@@ -8,7 +8,6 @@ choco install gh -y
 gh auth login  # skip ssh option
 gh auth refresh -h github.com -s admin:public_key
 gh ssh-key add --title "envy-fc0033dx" ~/.ssh/id_ed25519.pub
-gh extension install ntsk/gh-issue-bulk-create
 ```
 
 ```log
@@ -28,30 +27,12 @@ PS C:\Users\chris\src\sjsu.CMPE-220.CPU-simulator>
 ```
 
 ```powershell
-gh issue-bulk-create `
-    --template "./.github/artifacts/issue-template.yaml" `
-    --csv "./.github/artifacts/issues-m1.csv" `
+cd src
+git clone "https://github.com/chrisbcarl/bootstrap.git"
+python "bootstrap/apps/github-issue-creator/github-issue-creator.py" `
+    csv "sjsu.CMPE-220.CPU-simulator/.github/artifacts/issues-m1.csv" `
     --repo "chrisbcarl/sjsu.CMPE-220.CPU-simulator" `
-    --dry-run
-```
-
-```yaml
----
-title: "{{title}}"
-labels: "{{labels}}"
-assignees: "{{assignees}}"
-milestone: ["{{milestone}}"]
----
-## Description
-{{description}}
-
-## Reproduce
-{{steps}}
-```
-
-```csv
-milestone,title,labels,assignees,description,steps
-m1,bug: fix running on ubuntu,bug,chrisbcarl,as it says on the tin,"comma, separated, list"
+    --dry
 ```
 
 # Labels

@@ -1,6 +1,10 @@
 meetings
     git/github review
 
+unrelated
+    better wrapper for https://cli.github.com/manual/gh_issue_create
+        current one doesn't prevent dupes...
+
 phases
     - simple
         diagram (data path)

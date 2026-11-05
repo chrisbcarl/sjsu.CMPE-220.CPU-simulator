@@ -1,4 +1,4 @@
-milestone,title,labels,assignees,description,steps
+milestone,title,label,assignee,description,steps
 m1,bug: fix for ubuntu,bug,harshakrishna15,as it says on the tin,Clone the project into a folder with spaces and run `make -f ./makefile` or just `make`.
 m1,feature: CPU diagram,feature,ReverseBack2,Create a diagram of the CPU to the best of your ability with the limited information you have already.,"We can remake if needed, this is a first pass.
 - Single cycle
@@ -24,3 +24,4 @@ Output should be 3 files:
 - exponential-82.isa
 - exponential-82.bin"
 m1,docs: m2 sprint,feature,chrisbcarl,as it says on the tin,as it says on the tin
+r1,feature: Werror,feature,chrisbcarl,re-enable,tough love.
