@@ -4,6 +4,7 @@ meetings
 unrelated
     better wrapper for https://cli.github.com/manual/gh_issue_create
         current one doesn't prevent dupes...
+    linter ci/cd?
 
 phases
     - simple

@@ -52,6 +52,8 @@ choco install mingw -y
 # restart the terminal (non-admin)
 # build n run
 .\build.ps1
+
+wsl make  # alternative
 ```
 
 - Linux
