@@ -1,0 +1,27 @@
+milestone,title,label,assignee,description,steps
+m1,bug: fix for ubuntu,bug,harshakrishna15,as it says on the tin,Clone the project into a folder with spaces and run `make -f ./makefile` or just `make`.
+m1,feature: CPU diagram,feature,ReverseBack2,Create a diagram of the CPU to the best of your ability with the limited information you have already.,"We can remake if needed, this is a first pass.
+- Single cycle
+- L1 RAM
+- bidirectional bus or not
+- support for the r-type, i-type, j-type ISA
+- 32 bit word size
+- data-path is co-used, etc.
+We are deferring to your judgement!"
+m1,feature: ISA Bit Layout,feature,jehuzepeda-silva-rgb,"Migrate and complete the ISA doc to this repo.
+Create the bit layout for the 32 word size ISA.
+Output should be a markdown file in the ./docs directory.
+The contents should include the ISA with all of the instructions we've enumerated so far at least partially described and the aforementioned bit table.
+Instruction types should include R-type, I-type, and J-type binary code.","[Google Doc](https://docs.google.com/document/d/1HaAI7FO7SuMCUJWovo9nZ0dnfQEc_50ek_J9lk3XTpA/edit?tab=t.0)"
+m1,feature: source code 1 - exponentiation,feature,harshakrishna15,"As per the assignment requirements.","Implement exponentiation, $e^82$, in C, ISA, and binary code.
+Output should be 3 files:
+- exponential-82.c
+- exponential-82.isa
+- exponential-82.bin"
+m1,feature: source code 2 - factorial,feature,Bageldorf,"As per the assignment requirements.","Implement factorial, $8!$, in C, ISA, and binary code.
+Output should be 3 files:
+- exponential-82.c
+- exponential-82.isa
+- exponential-82.bin"
+m1,docs: m2 sprint,feature,chrisbcarl,as it says on the tin,as it says on the tin
+r1,feature: Werror,feature,chrisbcarl,re-enable,tough love.

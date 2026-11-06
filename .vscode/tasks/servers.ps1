@@ -8,3 +8,9 @@
 # EXAMPLE
 Write-Host -ForegroundColor Green "echo current python..."
 python -c "import sys; print(sys.executable)"
+
+if ($env:USERNAME -eq "chris") {
+    Write-Host -ForegroundColor Green "doc-watch for '$($env:USERNAME)'..."
+    $docs = "C:\users\chris\src\chriscarl.tools.documents"
+    & "$docs\.venv\scripts\doc-watch.cmd" dirs ./ --md-table-pretty
+}
