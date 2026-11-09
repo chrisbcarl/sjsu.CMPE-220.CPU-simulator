@@ -1,0 +1,41 @@
+{
+    "configurations": [
+        {
+            "name": "posix",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src/*"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "_GNU_SOURCE",  // access to pipe2
+                "_POSIX_C_SOURCE"   // access to SIG_BLOCK
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
+        },
+        {
+            "name": "Win32-usual",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src/*"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "_GNU_SOURCE",  // access to pipe2
+                "_POSIX_C_SOURCE"   // access to SIG_BLOCK
+            ],
+            "compilerPath": "C:/ProgramData/mingw64/mingw64/bin/gcc.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-gcc-x64"
+        }
+    ],
+    "version": 4
+}

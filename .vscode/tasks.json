@@ -1,0 +1,118 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "on-launch",
+            "type": "shell",
+            "runOptions": {"runOn": "folderOpen"},
+            "command": "echo",
+            "args": [
+                "whats", "up"
+            ]
+        },
+        {
+            "label": "C: gcc clean and build",
+            // https://stackoverflow.com/a/74227370
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "C/C++: Clean", // clean first, only "newly built" exes gdb correctly with vscode
+                "C: gcc build"
+            ]
+        },
+        {
+            "label": "C++: g++ clean and build",
+            // https://stackoverflow.com/a/74227370
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "C/C++: Clean", // clean first, only "newly built" exes gdb correctly with vscode
+                "C++: g++ build"
+            ]
+        },
+        {
+            // https://microsoft.github.io/code-with-engineering-playbook/developer-experience/cross-platform-tasks/
+            "type": "shell",
+            "label": "C/C++: Clean",
+            "linux": {
+                "command": "[",
+                "args": [
+                    "-f",
+                    "${workspaceFolder}/build/${fileBasenameNoExtension}",
+                    "]",
+                    "&&",
+                    "rm",
+                    "${workspaceFolder}/build/${fileBasenameNoExtension}",
+                    "||",
+                    "echo",
+                    "ok",
+                ],
+            },
+            "windows": {
+                // HYPER jank, but Remove-Item -SilentlyContinue still returns 1 exit code so...
+                "command": "If",
+                "args": [
+                    "(Test-Path",
+                    "${workspaceFolder}/build/${fileBasenameNoExtension})",
+                    "{",
+                    "rm",
+                    "${workspaceFolder}/build/${fileBasenameNoExtension}",
+                    "}",
+                    "else",
+                    "{",
+                    "echo",
+                    "ok",
+                    "}",
+                ]
+            },
+        },
+        {
+            "type": "shell",
+            "label": "C: gcc build",
+            "linux": {
+                "command": "make",
+                "args": [
+                    "-f", "./Makefile", "clean", "build"
+                ]
+            },
+            "windows": {
+                "command": "powershell",
+                "args": [
+                    "${workspaceFolder}/.vscode/tasks/gc+-build.ps1", "-e", "gcc", "-d", "${relativeFileDirname}", "-m", "${file}", "-o", "${workspaceFolder}/bin/${fileBasenameNoExtension}", "-Debug"
+                ]
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            // "problemMatcher": [
+            //     "$gcc"
+            // ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": "C/C++: Clean",
+        },
+        // long-running and project helping tasks that start on vscode launch
+        {
+            "label": "scriptlets",
+            "type": "shell",
+            "runOptions": {"runOn": "folderOpen"},
+            "windows": {
+                "command": "&",
+                "args": [
+                    ".vscode/tasks/scriptlets.ps1"
+                ]
+            },
+        },
+        {
+            "label": "servers",
+            "type": "shell",
+            "runOptions": {"runOn": "folderOpen"},
+            "windows": {
+                "command": "&",
+                "args": [
+                    ".vscode/tasks/servers.ps1"
+                ]
+            },
+        },
+    ]
+}

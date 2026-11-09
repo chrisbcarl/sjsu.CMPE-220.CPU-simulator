@@ -1,0 +1,25 @@
+# https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+name: C/C++ CI
+
+on:
+  push:  # whenever there is a push targeting:
+    branches: [ "main" ]
+  pull_request:  # whenever there is a pull_request event for a pull request targeting:
+    branches: [ "main" ]
+
+jobs:
+  build-and-run:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: inspect
+      run: |
+        whoami
+        uname -a
+        ls -lah
+        pwd
+    - name: make all
+      run: |
+        make -f ./Makefile

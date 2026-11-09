@@ -1,0 +1,43 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // https://stackoverflow.com/questions/61701704/vs-code-c-debugging
+            // https://code.visualstudio.com/docs/cpp/launch-json-reference
+            // https://stackoverflow.com/a/66541333
+            "name": "[C] - current",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/${fileBasenameNoExtension}",
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            // "MIMode": "gdb",
+            // "miDebuggerPath": "C://ProgramData//mingw64//mingw64//bin//gcc.exe",
+            "setupCommands": [
+                {
+                    "description": "enable pretty print",
+                    "text": "--enable-pretty-printing",
+                    "ignoreFailures": true,
+                }
+            ],
+            "preLaunchTask": "C: gcc clean and build",
+            "args": [
+                // program cli args
+                "-d",
+            ]
+        },
+        {
+            "name": "[python] - current",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+    ]
+}
