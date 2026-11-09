@@ -28,12 +28,20 @@
 /* ---------- machine constants ---------- */
 #define ISA_WORD_BITS 32
 #define ISA_NUM_GPRS 16   // R0..R15 (4-bit register fields)
+// 2 SPR ? 
 #define ISA_REG_LR 14   // link register (return address for CALL/RET)
 #define ISA_REG_SP 15   // stack pointer (PUSH/POP); stack grows down
 
 /* ---------- field layout ----------
  * extract: (word >> SHIFT) & MASK
  * insert:  (value & MASK) << SHIFT
+ * Example: ADD R1, R2, R3 is the word 0x71123000.
+ * 0x71123000 = 0111 0001 | 0001 | 0010 | 0011 | 0000 0000 0000
+ *                opcode     rd     rs1    rs2    unused
+ * (word >> 24) & 0xFF gives 0x71, the opcode for ADD.
+ * (word >> 20) & 0xF gives 1, so rd is R1.
+ * (word >> 16) & 0xF gives 2, so rs1 is R2.
+ * (word >> 12) & 0xF gives 3, so rs2 is R3.
  */
 #define ISA_OPCODE_SHIFT 24
 #define ISA_RD_SHIFT 20
@@ -61,7 +69,7 @@
  * The control unit can drive signals straight from these bits.
  */
 #define ISA_OP(jmp, ops, alu, ins) \
-    ((((jmp) & 1u) << 7) | (((ops) & 3u) << 5) | (((alu) & 1u) << 4) | ((ins) & 0xFu))
+    ((((jmp) & 1u) << 7) | (((ops) & 3u) << 5) | (((alu) & 1u) << 4) | ((ins) & 0xFu)) // Each argument shifted left into its slot and ORed into the 8-bit opcode.
 
 #define ISA_OP_JMP(op) (((op) >> 7) & 1u)
 #define ISA_OP_OPS(op) (((op) >> 5) & 3u)
@@ -70,13 +78,13 @@
 
 /* ---------- opcodes ----------
  * Syntax is "MNEMONIC dest, src, src": destination leftmost.
- * Marked [doc] = from the design doc, [added] = not in the doc.
+ * give instructions names (rather then using hex values in the code)
  */
 typedef enum {
     /* ----- control: 0 operands ----- */
-    OP_HALT = ISA_OP(0, 0, 0, 0),   // 0x00 [added in case] stop the clock
-    OP_NOP = ISA_OP(0, 0, 0, 1),   // 0x01 [added in case] do nothing
-    OP_RET = ISA_OP(1, 0, 0, 0),   // 0x80 [added, not sure we need] PC ← LR
+    OP_HALT = ISA_OP(0, 0, 0, 0),   // 0x00 [added just in case] stop the clock
+    OP_NOP = ISA_OP(0, 0, 0, 1),   // 0x01 [added just in case] do nothing
+    OP_RET = ISA_OP(1, 0, 0, 0),   // 0x80 [added, not sure if we are using?] PC ← LR
 
     /* ----- stack: 1 operand ----- */
     OP_PUSH = ISA_OP(0, 1, 0, 0),   // 0x20 [added in case] R: SP ← SP - 1, mem[SP] ← rd
