@@ -1,5 +1,11 @@
 # ISA Table
 
+Author: Jehu Zepeda-Silva <jehu.zepeda-silva@sjsu.edu>
+
+| Date | Author | Change |
+|---|---|---|
+| 2026-11-09 | Jehu Zepeda-Silva | Instruction table and R/I/J bit layout, matching `isa.h` |
+
 32-bit instructions, 16 registers (`R0`–`R15`), destination leftmost. Source of truth: [`src/cpu/isa.h`](../src/cpu/isa.h).
 
 ## Instruction formats

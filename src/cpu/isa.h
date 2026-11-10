@@ -16,6 +16,36 @@
  *
  * The opcode's format (ISA_TABLE[op].fmt) decides how bits 23..0 are read.
  * Example: ADD R1, R2, R3 = 0x71123000
+ *
+ * 2026-11-05 14:00 - isa - Jehu Zepeda-Silva - isa.h added (opcodes, formats, flags, API)
+ * Bare essentials: machine constants, field layout (shift/mask for
+ * encode/decode), opcode fields and the opcode enum.
+ *
+ * After the opcode enum (not strictly needed, can mostly be computed on the fly):
+ *
+ *   isa_format - Which layout (NONE/R/I/J) to read bits 23..0 with.
+ *   Same bits mean different things per format, so the decoder checks this first.
+ *
+ *   FLAG_* - Bit masks for the Z/C/O flags in the FLAGS register.
+ *
+ *   MMIO_* - Addresses where a STORE prints instead of writing memory, so programs have a ouput.
+ * 
+ *   isa_instruction - A 32-bit word unpacked into named fields. isa_decode() in isa.c fills it, the executor
+ *   reads it (R[inst.rd] = ...), isa_encode() in isa.c packs it back into a word. (Unused fields = 0)
+ *
+ *   isa_instruction - A decoded word as named fields (op, rd, rs1, rs2, imm, addr), so executor doesnt work with straight bits.
+ *   (i.e just use REGISTER[inst.rd] = REGISTER[inst.rs1] + REGISTER[inst.rs2])
+ *
+ *   isa_opcode_info - One ISA_TABLE row: mnemonic (human readable instead of using 0x71, use OP_ADD to index), format (how bits are used), flags it sets,
+ *   and whether imm16 is sign- or zero-extended.
+ *
+ *   ISA_TABLE - 256-entry (8 bits for opcode = 2^8 possible opcodes = 256) lookup indexed by opcode. Esentially Facts about each opcode live in one place;
+ *   unused opcodes are all zeros (mnemonic == NULL). (ISA_TABLE[OP_ADD].flags_set  -> FLAG_Z|FLAG_O|FLAG_C)
+ * 
+ *   Example, all together: 0x71123000
+ *     op = word >> 24 = 0x71 -> ISA_TABLE[0x71] = {"ADD", FMT_R, Z|O|C}
+ *     FMT_R -> decode gives {OP_ADD, rd=1, rs1=2, rs2=3} (isa_instruction)
+ *     execute: R[1] = R[2] + R[3], then set FLAG_Z/FLAG_O/FLAG_C
  */
 
 #ifndef H_ISA
@@ -182,7 +212,7 @@ typedef struct {
 extern const isa_opcode_info ISA_TABLE[256];
 
 /* ---------- API ---------- */
-bool isa_is_valid(uint8_t opcode);                         // opcode has a table row?
+bool isa_is_valid(uint8_t opcode);                         //  real opcode?
 isa_instruction isa_decode(uint32_t word);                            // word → fields
 uint32_t isa_encode(isa_instruction inst);                     // fields → word
 const char* isa_mnemonic(uint8_t opcode);                         // "ADD" or NULL

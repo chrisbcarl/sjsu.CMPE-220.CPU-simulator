@@ -1,3 +1,10 @@
+/**
+ * isa.c: ISA lookup table and encode/decode helpers (see isa.h).
+ *
+ * Author: Jehu Zepeda-Silva <jehu.zepeda-silva@sjsu.edu>
+ *
+ * 2026-11-05 14:00 - isa - Jehu Zepeda-Silva - APIs for decoding/encoding
+ */
 #include "isa.h"
 
 bool isa_is_valid(uint8_t opcode) 
