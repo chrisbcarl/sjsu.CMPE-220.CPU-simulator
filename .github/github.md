@@ -30,6 +30,7 @@ cd src
 git clone "https://github.com/chrisbcarl/bootstrap.git"
 python "bootstrap/apps/github-issue-creator/github-issue-creator.py" `
     csv "sjsu.CMPE-220.CPU-simulator/.github/artifacts/issues-m1.csv" `
+    --issue-template-filepath "sjsu.CMPE-220.CPU-simulator/.github/artifacts/issue-template.md" `
     --repo "chrisbcarl/sjsu.CMPE-220.CPU-simulator" `
     --dry
 ```
@@ -46,6 +47,7 @@ python "bootstrap/apps/github-issue-creator/github-issue-creator.py" `
 - ReverseBack2
 - jehuzepeda-silva-rgb
 - Bageldorf
+- sriharsha8000
 
 # Milestones
 |milestone|description         |due date         |

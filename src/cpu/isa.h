@@ -28,18 +28,15 @@
  *
  *   FLAG_* - Bit masks for the Z/C/O flags in the FLAGS register.
  *
- *   MMIO_* - Addresses where a STORE prints instead of writing memory, so programs have a ouput.
- * 
- *   isa_instruction - A 32-bit word unpacked into named fields. isa_decode() in isa.c fills it, the executor
- *   reads it (R[inst.rd] = ...), isa_encode() in isa.c packs it back into a word. (Unused fields = 0)
+ *   MMIO_* - Addresses where a STORE prints instead of writing memory, so programs have a output.
  *
- *   isa_instruction - A decoded word as named fields (op, rd, rs1, rs2, imm, addr), so executor doesnt work with straight bits.
+ *   isa_instruction - A decoded word as named fields (op, rd, rs1, rs2, imm, addr), so executor doesn't work with straight bits.
  *   (i.e just use REGISTER[inst.rd] = REGISTER[inst.rs1] + REGISTER[inst.rs2])
  *
  *   isa_opcode_info - One ISA_TABLE row: mnemonic (human readable instead of using 0x71, use OP_ADD to index), format (how bits are used), flags it sets,
  *   and whether imm16 is sign- or zero-extended.
  *
- *   ISA_TABLE - 256-entry (8 bits for opcode = 2^8 possible opcodes = 256) lookup indexed by opcode. Esentially Facts about each opcode live in one place;
+ *   ISA_TABLE - 256-entry (8 bits for opcode = 2^8 possible opcodes = 256) lookup indexed by opcode. Essentially Facts about each opcode live in one place;
  *   unused opcodes are all zeros (mnemonic == NULL). (ISA_TABLE[OP_ADD].flags_set  -> FLAG_Z|FLAG_O|FLAG_C)
  * 
  *   Example, all together: 0x71123000
