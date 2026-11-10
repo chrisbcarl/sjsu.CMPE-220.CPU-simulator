@@ -17,7 +17,8 @@
  * The opcode's format (ISA_TABLE[op].fmt) decides how bits 23..0 are read.
  * Example: ADD R1, R2, R3 = 0x71123000
  *
- * 2026-11-05 14:00 - isa - Jehu Zepeda-Silva - isa.h added (opcodes, formats, flags, API)
+ * 2026-11-10 12:30 - isa - Jehu Zepeda-Silva - isa.h added (opcodes, formats, flags, API)
+ * 
  * Bare essentials: machine constants, field layout (shift/mask for
  * encode/decode), opcode fields and the opcode enum.
  *
