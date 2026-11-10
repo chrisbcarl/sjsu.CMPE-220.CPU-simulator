@@ -26,9 +26,9 @@
  *   isa_format - Which layout (NONE/R/I/J) to read bits 23..0 with.
  *   Same bits mean different things per format, so the decoder checks this first.
  *
- *   FLAG_* - Bit masks for the Z/C/O flags in the FLAGS register.
+ *   FLAG_Z, FLAG_C, FLAG_O - Bit masks for the Z/C/O flags in the FLAGS register.
  *
- *   MMIO_* - Addresses where a STORE prints instead of writing memory, so programs have a output.
+ *   MMIO_PUTCHAR, MMIO_PUTINT - Addresses where a STORE prints instead of writing to memory, so programs have a output.
  *
  *   isa_instruction - A decoded word as named fields (op, rd, rs1, rs2, imm, addr), so executor doesn't work with straight bits.
  *   (i.e just use REGISTER[inst.rd] = REGISTER[inst.rs1] + REGISTER[inst.rs2])
