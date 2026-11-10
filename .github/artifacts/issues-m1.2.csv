@@ -1,0 +1,14 @@
+milestone,title,label,assignee,blocked-by,description,steps
+m1,docs: README and M1.2 Issues,feature,chrisbcarl,,"Update README to reflect recent changes.","Add Sriharsha's info as well."
+m1,feature: CPU Core,feature,ReverseBack2,"feature: CPU diagram","Create a CPU Core that implements the CPU diagram.","Create core.h and core.c--two files implementing the CPU diagram.
+It should contain all of the major components of the CPU like GPR (16), SPRs like PC and IR, ALU, control bits, bus address, bus return, etc.
+Feel free to use global variables, structs, unions, etc.
+"
+m1,docs: ISA Authorship,feature,jehuzepeda-silva-rgb,,"Update ISA files with authorship.","Include your name, forgot to mention that new files should definitely include yalls name..."
+m1,docs: ISA Validation and Disassembly,feature,sriharsha8000,,"Explore the isa.c and isa.h files by implementing the `isa_is_valid` and `isa_disassemble` functions.","Remember to include good documentation on their purposes.
+`bool isa_is_valid(uint8_t opcode)` takes an opcode as we've defined in isa.md and returns whether it's a real opcode or not. This can probably be done with testing particular bits, and brute force would be a large if statement. For example, 11111111 is not a valid opcode, doesn't match the table at all.
+`void isa_disassemble(uint32_t word, char* buf, size_t buflen)` is definitely trickier, takes an opcode, and CREATES an assembly-like instruction. For example, `0b0020001 1100 XXXX XXXX XXXXXXXXXXXX` should fill the buffer with `POP R12`. This will be useful for confirming if our example code is compiled correctly.
+
+If this is easier to code in python, I would recommend doing that first and then asing an LLM to make C code out of it or other creative ideas.
+NOTE: consider moving to m2 if unfeasible during m1.
+"

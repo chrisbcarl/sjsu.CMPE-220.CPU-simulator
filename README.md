@@ -1,8 +1,5 @@
 # sjsu.CMPE-220.CPU-simulator
-CPU simulator for SJSU 2026F CMPE 220 System Software instructed by Ishie Eswar.
-
-# About
-This is a simulated CPU, emulating a processor that executes binary code compiled from simple C programs.
+CPU simulator for SJSU 2026F CMPE 220 System Software instructed by Ishie Eswar. It simulates a simple, custom processor that executes binary code compiled from C programs.
 
 ## CPU Architecture Features
 - 32-bit RISC Architecture
@@ -19,7 +16,6 @@ This is a simulated CPU, emulating a processor that executes binary code compile
 ## Project Features
 - documentation
 - collaborative group effort: no slackers
-- no AI usage in academically relevant files or labor (see [ai-disclaimer](#ai-disclaimer))
 - unionized (kidding)
 
 
@@ -72,18 +68,18 @@ make -f ./Makefile
 |Name               |Email                         |Github Username           |Contributions                                        |
 |---                |---                           |---                       |---                                                  |
 |Chris Carl         |<chris.carl@sjsu.edu>         |chrisbcarl, chriscarl-sjsu|Project management, dev ops, code architecture design|
-|Harsha Krishnaswamy|<harsha.krishnaswamy@sjsu.edu>|harshakrishna15           |                                                     |
-|Donovan Burk       |<donovan.burk@sjsu.edu>       |ReverseBack2              |                                                     |
-|Jehu Zepeda-Silva  |<jehu.zepeda-silva@sjsu.edu>  |jehuzepeda-silva-rgb      |                                                     |
-|Mark Haiko         |<mark.haiko@sjsu.edu>         |Bageldorf                 |                                                     |
+|Harsha Krishnaswamy|<harsha.krishnaswamy@sjsu.edu>|harshakrishna15           |Example Programs                                     |
+|Donovan Burk       |<donovan.burk@sjsu.edu>       |ReverseBack2              |Core Diagram/Structs                                 |
+|Jehu Zepeda-Silva  |<jehu.zepeda-silva@sjsu.edu>  |jehuzepeda-silva-rgb      |ISA Definition                                       |
+|Mark Haiko         |<mark.haiko@sjsu.edu>         |Bageldorf                 |Example Programs                                     |
+|Sriharsha Edukulla |<sriharsha.edukulla@sjsu.edu> |sriharsha8000             |                                                     |
 
 
 
 ## AI Disclaimer
-All AI use is declared to be ethical and deliberate. We do not and will not use AI to affect academically related work. It will only be used in the cases where its usage does not contribute to the understanding of the concepts of Computer Architecture and Organization. All usage instances will include the product model description, prompt, datetime or URL for tracability.
-
-Unless specified, all disclaimed items were **modified** after content and not included in this project verbatim.
-
-The following items are declared to have been assisted by AI:
-- Makefile (Chris Carl)
+The following files are declared to have been partially developed with the use of generative AI:
+- Chris Carl
+    - `Makefile`
+- Jehu Zepeda-Silva
+    - `isa.md`, `isa.h`, `isa.c`
 
