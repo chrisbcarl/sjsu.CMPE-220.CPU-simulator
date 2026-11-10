@@ -1,7 +1,5 @@
 # ISA Table
 
-Author: Jehu Zepeda-Silva <jehu.zepeda-silva@sjsu.edu>
-
 | Date | Author | Change |
 |---|---|---|
 | 2026-11-10 | Jehu Zepeda-Silva | Instruction table and R/I/J bit layout, matching `isa.h` |
