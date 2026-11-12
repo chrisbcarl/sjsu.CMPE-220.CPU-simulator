@@ -14,7 +14,7 @@ IF if;
 ID id;
 EX ex;
 MEM mem;
-unint32_* ram;
+unint32_t* ram;
 WB wb;
 
 F_D_bus FDbus;
