@@ -6,7 +6,10 @@
  *  Need structs for each steps bus and registers
  *  WB struct holds pointers to the registers is changes
  *  IF and MEM need to call mem_access() after filling the MEM bus
+ *  Steps should only ever touch their struct, read from the previous bus, and and write to the next bus
 */
+
+#define RAMSIZE 1024
 
 typedef struct IF {
     uint32_t pc;
@@ -88,6 +91,7 @@ int core_setup();
 int cycle();
 int core_teardown();
 
+// Move definitions and implementation to own files
 int fetch();
 int decode();
 int execute();
