@@ -1,25 +1,29 @@
 # sjsu.CMPE-220.CPU-simulator
+
 CPU simulator for SJSU 2026F CMPE 220 System Software instructed by Ishie Eswar. It simulates a simple, custom processor that executes binary code compiled from C programs.
 
 ## CPU Architecture Features
+
 - 32-bit RISC Architecture
-    - 32-bit word size
-    - R-type, I-type, J-type instructions
-    - data-path is unified and shared among all instructions
+  - 32-bit word size
+  - R-type, I-type, J-type instructions
+  - data-path is unified and shared among all instructions
 - Single Cycle
 - L1 RAM
 
 ## Simulator Features
+
 - input: .bin files with 32-bit words
 - output: text log with the memory, register, and telemetry information
 
 ## Project Features
+
 - documentation
 - collaborative group effort: no slackers
 - unionized (kidding)
 
-
 # Development Setup
+
 ```bash
 git clone https://github.com/chrisbcarl/sjsu.CMPE-220.CPU-simulator
 cd sjsu.CMPE-220.CPU-simulator
@@ -34,9 +38,10 @@ poetry config virtualenvs.in-project true --local
 poetry install
 ```
 
-
 # Run
+
 - Windows
+
 ```powershell
 # dependencies - gnu C for win32
 # RUN AS ADMINISTRATOR
@@ -53,6 +58,7 @@ wsl make  # alternative
 ```
 
 - Linux
+
 ```bash
 # dependencies - gnu C + make
 # RUN AS ADMINISTRATOR
@@ -65,21 +71,23 @@ make -f ./Makefile
 ```
 
 # Authors
-|Name               |Email                         |Github Username           |Contributions                                        |
-|---                |---                           |---                       |---                                                  |
-|Chris Carl         |<chris.carl@sjsu.edu>         |chrisbcarl, chriscarl-sjsu|Project management, dev ops, code architecture design|
-|Harsha Krishnaswamy|<harsha.krishnaswamy@sjsu.edu>|harshakrishna15           |Example Programs                                     |
-|Donovan Burk       |<donovan.burk@sjsu.edu>       |ReverseBack2              |Core Diagram/Structs                                 |
-|Jehu Zepeda-Silva  |<jehu.zepeda-silva@sjsu.edu>  |jehuzepeda-silva-rgb      |ISA Definition                                       |
-|Mark Haiko         |<mark.haiko@sjsu.edu>         |Bageldorf                 |Example Programs                                     |
-|Sriharsha Edukulla |<sriharsha.edukulla@sjsu.edu> |sriharsha8000             |                                                     |
 
-
+| Name                | Email                          | Github Username            | Contributions                                         |
+| ------------------- | ------------------------------ | -------------------------- | ----------------------------------------------------- |
+| Chris Carl          | <chris.carl@sjsu.edu>          | chrisbcarl, chriscarl-sjsu | Project management, dev ops, code architecture design |
+| Harsha Krishnaswamy | <harsha.krishnaswamy@sjsu.edu> | harshakrishna15            | Example Programs                                      |
+| Donovan Burk        | <donovan.burk@sjsu.edu>        | ReverseBack2               | Core Diagram/Structs                                  |
+| Jehu Zepeda-Silva   | <jehu.zepeda-silva@sjsu.edu>   | jehuzepeda-silva-rgb       | ISA Definition                                        |
+| Mark Haiko          | <mark.haiko@sjsu.edu>          | Bageldorf                  | Example Programs                                      |
+| Sriharsha Edukulla  | <sriharsha.edukulla@sjsu.edu>  | sriharsha8000              |                                                       |
 
 ## AI Disclaimer
-The following files are declared to have been partially developed with the use of generative AI:
-- Chris Carl
-    - `Makefile`
-- Jehu Zepeda-Silva
-    - `isa.md`, `isa.h`, `isa.c`
 
+The following files are declared to have been partially developed with the use of generative AI:
+
+- Chris Carl
+  - `Makefile`
+- Jehu Zepeda-Silva
+  - `isa.md`, `isa.h`, `isa.c`
+- Harsha Krishnaswamy
+  - `exponential-82.c`
