@@ -26,7 +26,7 @@ loop:
 
 finished:
     div r8, r2, r7
-    addi r4, r4, r8
+    add r4, r4, r8
     div r4, r4 ,r2
 
     li r10, 0xff01 ;I'm not too sure if this will print properly

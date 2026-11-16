@@ -2,7 +2,7 @@
 
 int main(void)
 {
-    int x = 82;
+    int x = 5;
     int scale = 1000;
     int term = scale;
     int out = scale;
