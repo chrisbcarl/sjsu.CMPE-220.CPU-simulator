@@ -90,4 +90,4 @@ The following files are declared to have been partially developed with the use o
 - Jehu Zepeda-Silva
   - `isa.md`, `isa.h`, `isa.c`
 - Harsha Krishnaswamy
-  - `exponential-82.c`
+  - `exponential-82.c`, `exponential-5.isa`, `exponential-5.bin`
