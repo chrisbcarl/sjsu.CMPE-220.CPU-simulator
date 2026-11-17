@@ -1,3 +1,4 @@
+// Compile from this directory: gcc exponential-5.c -o exponential-5
 #include <stdio.h>
 
 int main(void)
