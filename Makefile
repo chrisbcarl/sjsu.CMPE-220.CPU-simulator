@@ -39,7 +39,6 @@ CPPFLAGS += $(INC_FLAGS) -MMD -MP
 all: clean build run
 
 clean:
-	echo $(MAKEFILE_DIR)
 	rm -rf $(BUILD_DIR) $(MAKEFILE_DIR)/bin
 	rm -rf $(TARGET)
 
