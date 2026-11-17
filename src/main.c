@@ -13,7 +13,7 @@ make -f CMPE-220/assignments/project/Makefile
 
 // project
 #include <errors.h>
-#include <test-bench.h>
+#include <bench.h>
 
 
 
