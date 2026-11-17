@@ -10,11 +10,8 @@ CC ?= gcc
 CFLAGS ?= -Wall -Wextra -O2
 # NOTE: -Werror causes fail on any warnings, very stringent...
 
-EXCLUDE_DIRS := test
-PRUNE := $(foreach d,$(EXCLUDE_DIRS),-path '$(MAKEFILE_DIR)/$(d)' -prune -o)
-
-SRCS := $(shell find $(MAKEFILE_DIR) $(PRUNE) -type f -name '*.c')
-HDRS := $(shell find $(MAKEFILE_DIR) $(PRUNE) -type f -name '*.h')
+SRCS := $(shell find $(MAKEFILE_DIR) -type f -name '*.c')
+HDRS := $(shell find $(MAKEFILE_DIR) -type f -name '*.h')
 INC_DIRS := $(sort $(dir $(HDRS)))
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
