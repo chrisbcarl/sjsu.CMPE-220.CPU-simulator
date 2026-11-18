@@ -19,6 +19,7 @@ CFLAGS ?= -Wall -Wextra -O2
 SRCS := $(shell find $(MAKEFILE_DIR) \
 					-type d \( -path '$(MAKEFILE_DIR)/test' -o -path '$(MAKEFILE_DIR)/docs' \) -prune -o \
 					-type f -name '*.c' -print)
+SRCS := $(filter-out $(MAKEFILE_DIR)/src/test/exponentiation/%,$(SRCS))
 HDRS := $(shell find $(MAKEFILE_DIR) \
 					-type d \( -path '$(MAKEFILE_DIR)/test' -o -path '$(MAKEFILE_DIR)/docs' \) -prune -o \
 					-type f -name '*.h' -print)
