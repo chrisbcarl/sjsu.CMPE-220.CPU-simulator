@@ -1,0 +1,15 @@
+
+; load the values for the counter and the values to be changed
+li r1, 1
+li r2, 1
+li r3, 8
+
+; multiply r1 and r2, add next value, increment r2 by 1, check if looped enough, load printint into r5, and print out the output, end
+loop:
+mul r4, r1, r2
+add r1, r1, r4
+addi r2, r2, 1
+blt r2, r3, loop
+li r5, 0xFF01
+store 0(r5), r1
+halt

@@ -1,7 +1,7 @@
 /*
 run through the gammut of possible functions
 
-2026-10-10 21:02 - test-bench.c - now we've got gates, arithmetic, logic, registers, and alu tested for.
+2026-10-10 21:02 - bench.c - now we've got gates, arithmetic, logic, registers, and alu tested for.
 */
 
 // stdlib
@@ -12,7 +12,7 @@ run through the gammut of possible functions
 #include <stddef.h>  // size_t
 
 // project
-#include <test-bench.h>
+#include <bench.h>
 
 
 int test_bench_gates() {
