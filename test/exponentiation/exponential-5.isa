@@ -1,0 +1,35 @@
+li r0, 0
+li r1, 5 ; x
+li r2, 1000 ; scale
+mov r3, r2 ; term = scale
+mov r4, r2 ; out = scale
+
+li r5, 1 ; i = 1
+li r6, 30 ; limit for loop
+li r7, 2 ; used for dividing by 2
+
+loop:
+    bgt r5, r6, finished; branch when i > 30
+    
+    div r8, r5, r7
+    mul r9, r3, r1
+    add r9, r9, r8
+    div r3, r9, r5
+
+    add r4, r4, r3
+
+    beq r3, r0, finished
+
+    addi r5, r5, 1
+
+    jump loop
+
+finished:
+    div r8, r2, r7
+    add r4, r4, r8
+    div r4, r4 ,r2
+
+    li r10, 0xff01 ;I'm not too sure if this will print properly
+    store 0(r10), r4
+    halt
+
