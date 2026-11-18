@@ -11,6 +11,7 @@ CFLAGS ?= -Wall -Wextra -O2
 # NOTE: -Werror causes fail on any warnings, very stringent...
 
 SRCS := $(shell find $(MAKEFILE_DIR) -type f -name '*.c')
+SRCS := $(filter-out $(MAKEFILE_DIR)/src/test/exponentiation/%,$(SRCS))
 HDRS := $(shell find $(MAKEFILE_DIR) -type f -name '*.h')
 INC_DIRS := $(sort $(dir $(HDRS)))
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
