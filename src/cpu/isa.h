@@ -18,6 +18,7 @@
  * Example: ADD R1, R2, R3 = 0x71123000
  *
  * 2026-11-10 12:30 - isa - Jehu Zepeda-Silva - isa.h added (opcodes, formats, flags, API)
+ * 2026-11-17 - Sriharsha Edukulla - documented initial HALT/NOP support (#26)
  * 
  * Bare essentials: machine constants, field layout (shift/mask for
  * encode/decode), opcode fields and the opcode enum.
@@ -210,10 +211,18 @@ typedef struct {
 extern const isa_opcode_info ISA_TABLE[256];
 
 /* ---------- API ---------- */
-bool isa_is_valid(uint8_t opcode);                         //  real opcode?
+/* Initial support for issue #26: true for HALT and NOP only.
+ * Other opcodes return false until the remaining instruction coverage is added.
+ * This checks just the opcode, not the unused bits of an instruction word.
+ */
+bool isa_is_valid(uint8_t opcode);
 isa_instruction isa_decode(uint32_t word);                            // word → fields
 uint32_t isa_encode(isa_instruction inst);                     // fields → word
 const char* isa_mnemonic(uint8_t opcode);                         // "ADD" or NULL
-void isa_disassemble(uint32_t word, char* buf, size_t len); // "ADD R1, R2, R3"
+/* Write "HALT" or "NOP" with no newline. Other opcodes produce
+ * "UNSUPPORTED 0xXXXXXXXX" with the original word in hex.
+ * Short buffers are NUL-terminated; NULL or zero-length buffers are left alone.
+ */
+void isa_disassemble(uint32_t word, char* buf, size_t buflen);
 
 #endif
