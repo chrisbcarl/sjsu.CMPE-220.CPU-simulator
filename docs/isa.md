@@ -62,32 +62,15 @@ bit:   7     6  5     4     3  2  1  0
 | `BLE` | `BLE rd, rs1, label` | I | 1 | 3 | 1 | 4 | `0xF4` | if rd ≤ rs1: PC ← imm | Z |
 | `BGE` | `BGE rd, rs1, label` | I | 1 | 3 | 1 | 5 | `0xF5` | if rd ≥ rs1: PC ← imm | Z |
 
-## Initial validation and disassembly
+## HALT/NOP support
 
-This is partial progress on issue #26, covering HALT and NOP only.
-`isa_is_valid(opcode)` currently returns true for `OP_HALT` (`0x00`) and `OP_NOP`
-(`0x01`). All other opcodes return false for now; coverage of the remaining
-instructions in the table above is still pending.
+Partial work for #26: validation and disassembly currently support `HALT` and
+`NOP`. Other opcodes are unsupported.
 
-`isa_disassemble(word, buf, buflen)` writes `HALT` or `NOP`. Both instructions have
-no operands, so their lower 24 bits are ignored. Any other opcode produces
-`UNSUPPORTED 0xXXXXXXXX`, preserving the original word for inspection. That
-message also applies to instructions that are defined in the ISA but haven't
-been implemented in this first pass.
-
-The output has no trailing newline. Short buffers receive a NUL-terminated
-prefix; a NULL buffer or a length of zero does nothing.
-
-### Running the focused checks
-
-From the repository root:
+Run the focused checks:
 
 ```sh
 mkdir -p bin
 cc -std=c11 -Wall -Wextra -I src/cpu src/cpu/isa.c test/isa/test_isa.c -o bin/test_isa
 ./bin/test_isa
 ```
-
-The checks cover HALT/NOP, the unsupported-opcode fallback, unused operand bits,
-NULL pointers and buffer sizes. The existing encode/decode and mnemonic stubs
-still produce compiler warnings. CPU execution is outside this change.
