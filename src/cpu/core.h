@@ -61,6 +61,7 @@ typedef struct D_E_bus {
 
 typedef struct EX {
     // add as needed?
+    uint8_t temp;
 } EX;
 
 typedef struct E_M_bus {
@@ -72,6 +73,7 @@ typedef struct E_M_bus {
 
 typedef struct MEM {
     // add as needed?
+    uint8_t temp;
 } MEM;
 
 typedef struct MEM_bus {
