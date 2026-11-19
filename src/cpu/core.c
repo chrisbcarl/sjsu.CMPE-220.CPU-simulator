@@ -10,12 +10,12 @@
 
 #include "core.h"
 
-IF if;
-ID id;
-EX ex;
-MEM mem;
-unint32_t* ram;
-WB wb;
+IF if_s;
+ID id_s;
+EX ex_s;
+MEM mem_s;
+uint32_t* ram;
+WB wb_s;
 
 F_D_bus FDbus;
 D_E_bus DEbus;
@@ -25,10 +25,10 @@ M_W_bus MWbus;
 MEM_bus MEMbus;
 
 int core_setup() {
-    wb.pc = &if.pc;
-    id.registers = calloc(16 * sizeof(unint32_t));
-    wb.registers = &id.registers;
-    ram = calloc(RAMSIZE * sizeof(uint32_t));
+    wb_s.pc = &if_s.pc;
+    id_s.registers = calloc(16, 16 * sizeof(uint32_t));
+    wb_s.registers = &id_s.registers;
+    ram = calloc(RAMSIZE, RAMSIZE * sizeof(uint32_t));
     return 0;
 }
 
@@ -42,6 +42,33 @@ int cycle() {
 }
 
 int core_teardown() {
-    free(id.registers);
+    free(id_s.registers);
     free(ram);
+    return 0;
+}
+
+
+
+int fetch() {
+    return 0;
+}
+
+int decode() {
+    return 0;
+}
+
+int execute() {
+    return 0;
+}
+
+int memory() {
+    return 0;
+}
+
+int writeBack() {
+    return 0;
+}
+
+int mem_access() {
+    return 0;
 }

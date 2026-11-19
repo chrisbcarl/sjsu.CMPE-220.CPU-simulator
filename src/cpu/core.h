@@ -9,6 +9,11 @@
  *  Steps should only ever touch their struct, read from the previous bus, and and write to the next bus
 */
 
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+
 #define RAMSIZE 1024
 
 typedef struct IF {
