@@ -79,7 +79,7 @@ make -f ./Makefile
 | Donovan Burk        | <donovan.burk@sjsu.edu>        | ReverseBack2               | Core Diagram/Structs                                  |
 | Jehu Zepeda-Silva   | <jehu.zepeda-silva@sjsu.edu>   | jehuzepeda-silva-rgb       | ISA Definition                                        |
 | Mark Haiko          | <mark.haiko@sjsu.edu>          | Bageldorf                  | Example Programs                                      |
-| Sriharsha Edukulla  | <sriharsha.edukulla@sjsu.edu>  | sriharsha8000              |                                                       |
+| Sriharsha Edukulla  | <sriharsha.edukulla@sjsu.edu>  | sriharsha8000              | ISA validation and disassembly                         |
 
 ## AI Disclaimer
 
@@ -91,3 +91,5 @@ The following files are declared to have been partially developed with the use o
   - `isa.md`, `isa.h`, `isa.c`
 - Harsha Krishnaswamy
   - `exponential-82.c`, `exponential-5.isa`, `exponential-5.bin`
+- Sriharsha Edukulla
+  - `src/cpu/isa.c`, `src/cpu/isa.h`, `docs/isa.md`, `test/isa/test_isa.c`
