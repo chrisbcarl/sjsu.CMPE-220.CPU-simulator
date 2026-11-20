@@ -4,6 +4,7 @@
 |---|---|---|
 | 2026-11-10 | Jehu Zepeda-Silva | Instruction table and R/I/J bit layout, matching `isa.h` |
 | 2026-11-17 | Sriharsha Edukulla | Initial HALT/NOP validation and disassembly for issue #26 |
+| 2026-11-20 | Sriharsha Edukulla | Added ADD, POP and LOAD validation and disassembly after review |
 
 32-bit instructions, 16 registers (`R0`–`R15`), destination leftmost. Source of truth: [`src/cpu/isa.h`](../src/cpu/isa.h).
 
@@ -62,10 +63,10 @@ bit:   7     6  5     4     3  2  1  0
 | `BLE` | `BLE rd, rs1, label` | I | 1 | 3 | 1 | 4 | `0xF4` | if rd ≤ rs1: PC ← imm | Z |
 | `BGE` | `BGE rd, rs1, label` | I | 1 | 3 | 1 | 5 | `0xF5` | if rd ≥ rs1: PC ← imm | Z |
 
-## HALT/NOP support
+## Validation and disassembly
 
-Partial work for #26: validation and disassembly currently support `HALT` and
-`NOP`. Other opcodes are unsupported.
+Partial work for #26: supports `HALT`, `NOP`, `ADD`, `POP` and `LOAD`.
+Other opcodes are unsupported. `LOAD` displays the raw 16-bit offset in decimal.
 
 Run the focused checks:
 

@@ -79,7 +79,7 @@ make -f ./Makefile
 | Donovan Burk        | <donovan.burk@sjsu.edu>        | ReverseBack2               | Core Diagram/Structs                                  |
 | Jehu Zepeda-Silva   | <jehu.zepeda-silva@sjsu.edu>   | jehuzepeda-silva-rgb       | ISA Definition                                        |
 | Mark Haiko          | <mark.haiko@sjsu.edu>          | Bageldorf                  | Example Programs                                      |
-| Sriharsha Edukulla  | <sriharsha.edukulla@sjsu.edu>  | sriharsha8000              | Initial HALT/NOP validation and disassembly             |
+| Sriharsha Edukulla  | <sriharsha.edukulla@sjsu.edu>  | sriharsha8000              | ISA validation and disassembly                         |
 
 ## AI Disclaimer
 

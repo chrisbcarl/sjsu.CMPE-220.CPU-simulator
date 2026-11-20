@@ -211,18 +211,10 @@ typedef struct {
 extern const isa_opcode_info ISA_TABLE[256];
 
 /* ---------- API ---------- */
-/* Initial support for issue #26: true for HALT and NOP only.
- * Other opcodes return false until the remaining instruction coverage is added.
- * This checks just the opcode, not the unused bits of an instruction word.
- */
 bool isa_is_valid(uint8_t opcode);
 isa_instruction isa_decode(uint32_t word);                            // word → fields
 uint32_t isa_encode(isa_instruction inst);                     // fields → word
 const char* isa_mnemonic(uint8_t opcode);                         // "ADD" or NULL
-/* Write "HALT" or "NOP" with no newline. Other opcodes produce
- * "UNSUPPORTED 0xXXXXXXXX" with the original word in hex.
- * Short buffers are NUL-terminated; NULL or zero-length buffers are left alone.
- */
 void isa_disassemble(uint32_t word, char* buf, size_t buflen);
 
 #endif
