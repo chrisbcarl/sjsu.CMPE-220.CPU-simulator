@@ -1,0 +1,80 @@
+milestone,title,label,assignee,blocked-by,description,steps
+m2,feature: isa ADD,feature,chriscarl-sjsu,,"Implement ADD,CMP","MODIFY:
+PROTOTYPE:
+- fetch
+- decode
+- execute
+- mem
+- wb
+MODIFY:
+- isa_is_valid
+- isa_decode
+- isa_encode
+- isa_mnemonic
+- isa_disassemble
+- instructions file
+- test cases"
+m2,feature: isa arithmetic,feature,chriscarl-sjsu,,"Implement SUB,MUL,DIV,ADDI.","MODIFY:
+- isa_is_valid
+- isa_decode
+- isa_encode
+- isa_mnemonic
+- isa_disassemble
+- instructions file
+- test cases"
+m2,feature: isa logic,feature,,feature: isa arithmetic,"Implement AND,OR,XOR,SL,SR,SLA,SRA.","MODIFY:
+- isa_is_valid
+- isa_decode
+- isa_encode
+- isa_mnemonic
+- isa_disassemble
+- instructions file
+- test cases"
+m2,feature: isa branches,feature,,feature: isa arithmetic,"Implement BEQ,BNQ,BLT,BGT,BLE,BGE.","MODIFY:
+- isa_is_valid
+- isa_decode
+- isa_encode
+- isa_mnemonic
+- isa_disassemble
+- instructions file
+- test cases"
+m2,feature: isa anti-nary/unary,feature,,feature: isa arithmetic,"Implement NOT,NEG,HALT,NOP,RET.","MODIFY:
+- isa_is_valid
+- isa_decode
+- isa_encode
+- isa_mnemonic
+- isa_disassemble
+- instructions file
+- test cases"
+m2,feature: isa stack,feature,,feature: isa arithmetic,"Implement PUSH,POP.","MODIFY:
+- isa_is_valid
+- isa_decode
+- isa_encode
+- isa_mnemonic
+- isa_disassemble
+- instructions file
+- test cases"
+m2,feature: isa jump,feature,,feature: isa arithmetic,"Implement JUMP,JR,CALL.","MODIFY:
+- isa_is_valid
+- isa_decode
+- isa_encode
+- isa_mnemonic
+- isa_disassemble
+- instructions file
+- test cases"
+m2,feature: isa memory,feature,,feature: isa arithmetic,"Implement LOAD,STORE,MOV,LI,LUI","MODIFY:
+- isa_is_valid
+- isa_decode
+- isa_encode
+- isa_mnemonic
+- isa_disassemble
+- instructions file
+- test cases"
+m2,feature: isa memory,feature,,feature: isa arithmetic,"Implement LOAD,STORE,MOV,LI,LUI","MODIFY:
+- isa_is_valid
+- isa_decode
+- isa_encode
+- isa_mnemonic
+- isa_disassemble
+- instructions file
+- test cases"
