@@ -309,3 +309,19 @@ int test_bench_cpu_simple() {
 
     return EXIT_SUCCESS;
 }
+
+// int main(int argc, char** argv) {
+//     for (int i = 0; i < argc; i++) {
+//         printf("%s\n", argv[i]);
+//     }
+
+//     die_on_failure(test_bench_gates);
+//     die_on_failure(test_bench_arithmetic);
+//     die_on_failure(test_bench_logic);
+//     die_on_failure(test_bench_registers);
+//     die_on_failure(test_bench_alu);
+//     die_on_failure(test_bench_cpu_simple);
+
+//     printf("SUCCESS!\n");
+//     return EXIT_SUCCESS;
+// }

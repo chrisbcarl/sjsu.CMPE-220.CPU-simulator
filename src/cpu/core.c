@@ -1,4 +1,4 @@
-/*  
+/*
  *  Author: Donovan Burk
  *  high level cycle() is repeat entry point after core_setup(), call core_teardown() to be nice :)
  *  each step has a function inside cycle()
