@@ -1,9 +1,10 @@
 # ISA Table
 
-|Date      |Author           |Change                                                  |
-|---       |---              |---                                                     |
-|2026-11-12|Chris Carl       |markdown table formatting, nothing substantive          |
-|2026-11-10|Jehu Zepeda-Silva|Instruction table and R/I/J bit layout, matching `isa.h`|
+|Date      |Author            |Change                                                         |
+|---       |---               |---                                                            |
+|2026-11-10|Jehu Zepeda-Silva |Instruction table and R/I/J bit layout, matching `isa.h`       |
+|2026-11-17|Sriharsha Edukulla|Initial HALT/NOP validation and disassembly for issue #26      |
+|2026-11-20|Sriharsha Edukulla|Added ADD, POP and LOAD validation and disassembly after review|
 
 32-bit instructions, 16 registers (`R0`–`R15`), destination leftmost. Source of truth: [`src/cpu/isa.h`](../src/cpu/isa.h).
 
@@ -49,7 +50,7 @@ bit:   7     6  5     4     3  2  1  0
 |`DIV`  |`DIV rd, rs1, rs2`  |R   |0  |3  |1  |4  |`0x74`|rd ← rs1 ÷ rs2                |Z    |
 |`ADDI` |`ADDI rd, rs1, imm` |I   |0  |3  |1  |5  |`0x75`|rd ← rs1 + imm (sign-extended)|Z O C|
 |`AND`  |`AND rd, rs1, rs2`  |R   |0  |3  |1  |9  |`0x79`|rd ← rs1 & rs2                |Z    |
-|`OR`   |`OR rd, rs1, rs2`   |R   |0  |3  |1  |10 |`0x7A`|rd ← rs1 ∨ rs2                |Z    |
+|`OR`   |`OR rd, rs1, rs2`   |R   |0  |3  |1  |10 |`0x7A`|rd ← rs1 OR rs2               |Z    |
 |`XOR`  |`XOR rd, rs1, rs2`  |R   |0  |3  |1  |11 |`0x7B`|rd ← rs1 ^ rs2                |Z    |
 |`SL`   |`SL rd, rs1, rs2`   |R   |0  |3  |1  |12 |`0x7C`|rd ← rs1 << rs2 (zero-fill)   |Z    |
 |`SR`   |`SR rd, rs1, rs2`   |R   |0  |3  |1  |13 |`0x7D`|rd ← rs1 >> rs2 (zero-fill)   |Z    |
@@ -61,3 +62,16 @@ bit:   7     6  5     4     3  2  1  0
 |`BGT`  |`BGT rd, rs1, label`|I   |1  |3  |1  |3  |`0xF3`|if rd > rs1: PC ← imm         |Z    |
 |`BLE`  |`BLE rd, rs1, label`|I   |1  |3  |1  |4  |`0xF4`|if rd ≤ rs1: PC ← imm         |Z    |
 |`BGE`  |`BGE rd, rs1, label`|I   |1  |3  |1  |5  |`0xF5`|if rd ≥ rs1: PC ← imm         |Z    |
+
+## Validation and disassembly
+
+Partial work for #26: supports `HALT`, `NOP`, `ADD`, `POP` and `LOAD`.
+Other opcodes are unsupported. `LOAD` displays the raw 16-bit offset in decimal.
+
+Run the focused checks:
+
+```sh
+mkdir -p bin
+cc -std=c11 -Wall -Wextra -I src/cpu src/cpu/isa.c test/isa/test_isa.c -o bin/test_isa
+./bin/test_isa
+```
