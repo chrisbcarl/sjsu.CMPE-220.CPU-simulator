@@ -14,7 +14,7 @@ MODIFY:
 - isa_disassemble
 - instructions file
 - test cases"
-m2,feature: isa arithmetic,feature,chriscarl-sjsu,,"Implement SUB,MUL,DIV,ADDI.","MODIFY:
+m2,feature: isa arithmetic,feature,,feature: isa ADD,"Implement SUB,MUL,DIV,ADDI.","MODIFY:
 - isa_is_valid
 - isa_decode
 - isa_encode
@@ -22,7 +22,7 @@ m2,feature: isa arithmetic,feature,chriscarl-sjsu,,"Implement SUB,MUL,DIV,ADDI."
 - isa_disassemble
 - instructions file
 - test cases"
-m2,feature: isa logic,feature,,feature: isa arithmetic,"Implement AND,OR,XOR,SL,SR,SLA,SRA.","MODIFY:
+m2,feature: isa logic,feature,,feature: isa ADD,"Implement AND,OR,XOR,SL,SR,SLA,SRA.","MODIFY:
 - isa_is_valid
 - isa_decode
 - isa_encode
@@ -30,7 +30,7 @@ m2,feature: isa logic,feature,,feature: isa arithmetic,"Implement AND,OR,XOR,SL,
 - isa_disassemble
 - instructions file
 - test cases"
-m2,feature: isa branches,feature,,feature: isa arithmetic,"Implement BEQ,BNQ,BLT,BGT,BLE,BGE.","MODIFY:
+m2,feature: isa branches,feature,,feature: isa ADD,"Implement BEQ,BNQ,BLT,BGT,BLE,BGE.","MODIFY:
 - isa_is_valid
 - isa_decode
 - isa_encode
@@ -38,7 +38,7 @@ m2,feature: isa branches,feature,,feature: isa arithmetic,"Implement BEQ,BNQ,BLT
 - isa_disassemble
 - instructions file
 - test cases"
-m2,feature: isa anti-nary/unary,feature,,feature: isa arithmetic,"Implement NOT,NEG,HALT,NOP,RET.","MODIFY:
+m2,feature: isa anti-nary/unary,feature,,feature: isa ADD,"Implement NOT,NEG,HALT,NOP,RET.","MODIFY:
 - isa_is_valid
 - isa_decode
 - isa_encode
@@ -46,7 +46,7 @@ m2,feature: isa anti-nary/unary,feature,,feature: isa arithmetic,"Implement NOT,
 - isa_disassemble
 - instructions file
 - test cases"
-m2,feature: isa stack,feature,,feature: isa arithmetic,"Implement PUSH,POP.","MODIFY:
+m2,feature: isa stack,feature,,feature: isa ADD,"Implement PUSH,POP.","MODIFY:
 - isa_is_valid
 - isa_decode
 - isa_encode
@@ -54,7 +54,7 @@ m2,feature: isa stack,feature,,feature: isa arithmetic,"Implement PUSH,POP.","MO
 - isa_disassemble
 - instructions file
 - test cases"
-m2,feature: isa jump,feature,,feature: isa arithmetic,"Implement JUMP,JR,CALL.","MODIFY:
+m2,feature: isa jump,feature,,feature: isa ADD,"Implement JUMP,JR,CALL.","MODIFY:
 - isa_is_valid
 - isa_decode
 - isa_encode
@@ -62,15 +62,7 @@ m2,feature: isa jump,feature,,feature: isa arithmetic,"Implement JUMP,JR,CALL.",
 - isa_disassemble
 - instructions file
 - test cases"
-m2,feature: isa memory,feature,,feature: isa arithmetic,"Implement LOAD,STORE,MOV,LI,LUI","MODIFY:
-- isa_is_valid
-- isa_decode
-- isa_encode
-- isa_mnemonic
-- isa_disassemble
-- instructions file
-- test cases"
-m2,feature: isa memory,feature,,feature: isa arithmetic,"Implement LOAD,STORE,MOV,LI,LUI","MODIFY:
+m2,feature: isa memory,feature,,feature: isa ADD,"Implement LOAD,STORE,MOV,LI,LUI","MODIFY:
 - isa_is_valid
 - isa_decode
 - isa_encode
