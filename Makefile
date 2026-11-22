@@ -1,3 +1,4 @@
+# 2026-11-22 - chriscarl - Makefile - added -g flag for PDB debugging
 # 2026-11-20 18:39 - Makefile - chriscarl - added isa.c test cases must pass first
 # 2026-11-16 22:02 - Makefile - chriscarl - added ignores for test and docs dir
 # 2026-10-13 15:34 - Makefile - chriscarl - initial commit
@@ -18,7 +19,7 @@
 MAKEFILE_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
 CC ?= gcc
-CFLAGS ?= -Wall -Wextra -O2
+CFLAGS ?= -g -Wall -Wextra -O2
 # NOTE: -Werror causes fail on any warnings, very stringent...
 
 # https://stackoverflow.com/a/4210072

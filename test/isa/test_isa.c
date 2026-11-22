@@ -2,10 +2,11 @@
  * 2026-11-17 - Sriharsha Edukulla - checks for initial HALT/NOP validation and disassembly (#26)
  * 2026-11-20 - Sriharsha Edukulla - ADD, POP and LOAD examples from PR review
  * 2026-11-22 - Chris Carl - isa overhaul in prep for the instructions that we're implementing, need to check that they're done correctly
+ * 2026-11-22 - Chris Carl - test_isa.c - added LI, LUI
  *
  * Build and run from the repository root:
  * mkdir -p bin
- * cc -std=c11 -Wall -Wextra -I src/cpu src/cpu/isa.c test/isa/test_isa.c -o bin/test_isa
+ * cc -std=c11 -Wall -Wextra -Isrc src/common.c -Isrc/cpu src/cpu/isa.c test/isa/test_isa.c -o bin/test_isa
  * ./bin/test_isa
  */
 #include <inttypes.h>
@@ -14,7 +15,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "common.h"  // BUFFER
+#include "common.h"  // BUFFER0
 #include "isa.h"
 
 #define assert(condition, failure_message, ...) \
@@ -33,6 +34,8 @@ static const disassembly_case valid_instructions[] = {
     {0x71DEF000, "ADD R13, R14, R15"},
     {0x21C00000, "POP R12"},
     {0x40FD0045, "LOAD R15, 69(R13)"},
+    {0x43A06969, "LI R10, 26985"},
+    {0x44306969, "LUI R3, 26985"},
 };
 size_t valid_instruction_count = sizeof(valid_instructions) / sizeof(valid_instructions[0]);
 static const uint32_t invalid_instructions[] = {
@@ -139,7 +142,7 @@ int test_isa_is_valid(void) {
     for (size_t i = 0; i < valid_instruction_count; i++) {
         uint32_t word = valid_instructions[i].word;
         const char* text = valid_instructions[i].text;
-        assert(isa_is_valid(word >> 24), "ERROR: valid_instructions[%lu] = '%s' invalid!\n", i, text);
+        assert(isa_is_valid(word >> 24), "ERROR: isa_is_valid - valid_instructions[%lu] = '%s' invalid!\n", i, text);
     }
     return EXIT_SUCCESS;
 }
@@ -156,7 +159,7 @@ int test_isa_decode(void) {
     for (size_t i = 0; i < invalid_instruction_count; i++) {
         uint32_t word = invalid_instructions[i];
         isa_instruction* instr = isa_decode(word);
-        assert(instr == NULL, "ERROR: invalid_instructions[%lu] = 0x%x is supposed to be invalid!\n", i, word);
+        assert(instr == NULL, "ERROR: isa_decode - invalid_instructions[%lu] = 0x%x is supposed to be invalid!\n", i, word);
     }
 
     return EXIT_SUCCESS;
@@ -171,7 +174,7 @@ int test_isa_encode(void) {
         printf("        valid_instrs[%lu], '%s' - op: 0x%x | rd: 0x%x | rs1: 0x%x | rs2: 0x%x | imm: 0x%x | addr: 0x%x\n", i, text, instr->op, instr->rd, instr->rs1, instr->rs2, instr->imm, instr->addr);
 
         uint32_t word2 = isa_encode(*instr);
-        assert(word == word2, "ERROR: decoded word[%lu] 0x%x != encoded 0x%x!", i, word, word2);
+        assert(word == word2, "ERROR: isa_encode - decoded word[%lu] 0x%x != encoded 0x%x!\n", i, word, word2);
         free(instr);
     }
 
@@ -188,14 +191,14 @@ int test_isa_mnemonic(void) {
 
         // copy text's mnemonic to buffer, compare to mnemonic
         size_t n = strlen(text);
-        BUFFER[n] = '\0';  // NOTE: give BUFFER a null termination otherwise compiler freaks out
-        strncpy(BUFFER, text, n);
+        BUFFER0[n] = '\0';  // NOTE: give BUFFER0 a null termination otherwise compiler freaks out
+        strncpy(BUFFER0, text, n);
         int idx_space = indexof((char*)text, ' ');
 
         // cannot use ternary statement due to int/size_t conversions
         if (idx_space == -1) n = strlen(mnemonic);
         else n = idx_space - 1;
-        assert(strncmp(mnemonic, BUFFER, n) == 0, "ERROR: valid[%lu] '%s' != '%s'!\n", i, BUFFER, mnemonic);
+        assert(strncmp(mnemonic, BUFFER0, n) == 0, "ERROR: isa_mnemonic - valid[%lu] '%s' != '%s'!\n", i, BUFFER0, mnemonic);
     }
 
     return EXIT_SUCCESS;
@@ -214,7 +217,7 @@ int test_isa_operands(void) {
         size_t n = strcnt((char*)text, ' ');
         size_t m = strlen(operands) == 0 ? 0 : strcnt((char*)operands, ' ') + 1;
         // compare if number of spaces is the same (trite, i know)
-        assert(n == m, "ERROR: valid[%lu] operand count not the same! Spaces count '%s' != '%s'! %lu != %lu!\n", i, text, operands, n, m);
+        assert(n == m, "ERROR: isa_operands - valid[%lu] operand count not the same! Spaces count '%s' != '%s'! %lu != %lu!\n", i, text, operands, n, m);
     }
 
     return EXIT_SUCCESS;
@@ -226,9 +229,9 @@ int test_isa_disassemble_2(void) {
         uint32_t word = valid_instructions[i].word;
         const char* text = valid_instructions[i].text;
 
-        isa_disassemble(word, BUFFER, BUFLEN);
-        printf("        0x%x -> '%s'\n", word, BUFFER);
-        assert(strcmp(BUFFER, text) == 0, "ERROR: valid[%lu] '%s' != '%s'!", i, text, BUFFER);
+        isa_disassemble_2(word, BUFFER0, BUFLEN);
+        printf("        0x%x -> '%s'\n", word, BUFFER0);
+        assert(strcmp(BUFFER0, text) == 0, "ERROR: isa_disassemble_2 - valid[%lu] '%s' != '%s'!\n", i, text, BUFFER0);
     }
 
     return EXIT_SUCCESS;

@@ -20,6 +20,7 @@
  * 2026-11-10 12:30 - isa - Jehu Zepeda-Silva - isa.h added (opcodes, formats, flags, API)
  * 2026-11-17 - Sriharsha Edukulla - documented initial HALT/NOP support (#26)
  * 2026-11-22 - Chris Carl - added OPCODES, isa_instruction_constructor, isa_decode is a pointer, isa_disassemble_2, and print_isa_table
+ * 2026-11-22 - Chris Carl - added FLAG_Z_OF
  *
  * Bare essentials: machine constants, field layout (shift/mask for
  * encode/decode), opcode fields and the opcode enum.
@@ -176,8 +177,11 @@ typedef enum {
  * Replaces flags_t in ip/registers.h; use one or the other.
  */
 #define FLAG_Z (1u << 0)  // zero: result == 0
+#define FLAG_Z_OF(value) ((value & FLAG_Z) >> 0)
 #define FLAG_C (1u << 1)  // carry: unsigned overflow
+#define FLAG_C_OF(value) ((value & FLAG_Z) >> 1)
 #define FLAG_O (1u << 2)  // overflow: signed overflow
+#define FLAG_O_OF(value) ((value & FLAG_O) >> 2)
 #define FLAG_NONE (0u)    // no flags are set high at all
 
 /* ---------- memory-mapped I/O (STORE to these prints) ---------- */

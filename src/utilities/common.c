@@ -5,9 +5,10 @@
 
 #include <stddef.h>
 #include <stdio.h>
-#include <common.h>
+#include "common.h"
 
-char BUFFER[BUFLEN] = {};  // temporary buffer for anyone to use
+char BUFFER0[BUFLEN] = {};  // temporary buffer for anyone to use
+char BUFFER1[BUFLEN] = {};  // temporary buffer for anyone to use
 
 int indexof(char* string, char c) {
     // https://stackoverflow.com/a/3217634

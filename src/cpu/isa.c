@@ -1,17 +1,18 @@
 /**
  * isa.c: ISA lookup table and encode/decode helpers (see isa.h).
  *
- * 2026-11-10 12:30 - isa - Jehu Zepeda-Silva - APIs for decoding/encoding
- * 2026-11-17 - Sriharsha Edukulla - initial HALT/NOP validation and disassembly (#26)
- * 2026-11-20 - Sriharsha Edukulla - add ADD, POP and LOAD disassembly after review
- * 2026-11-22 - Chris Carl - added OPCODES, isa_instruction_constructor, isa_decode is a pointer, isa_disassemble_2, and print_isa_table
+ * 2026-11-10 12:30 - Jehu Zepeda-Silva - isa.c - APIs for decoding/encoding
+ * 2026-11-17 - Sriharsha Edukulla - isa.c - initial HALT/NOP validation and disassembly (#26)
+ * 2026-11-20 - Sriharsha Edukulla - isa.c - add ADD, POP and LOAD disassembly after review
+ * 2026-11-22 - Chris Carl - isa.c - added OPCODES, isa_instruction_constructor, isa_decode is a pointer, isa_disassemble_2, and print_isa_table
+ * 2026-11-22 - Chris Carl - isa.c - added (isa.c){LI/LUI in ISA_TABLE, isa_operands, isa_disassemble_2}, (test_isa.c){valid_instructions}, (instructions.c/h){add them}
  */
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "common.h"  // BUFFER
+#include "common.h"  // BUFFER0
 #include "isa.h"
 
 const isa_opcode_info ISA_TABLE[OPCODES] = {
@@ -19,6 +20,8 @@ const isa_opcode_info ISA_TABLE[OPCODES] = {
     [0x01] = {"NOP", FMT_NONE, FLAG_NONE, false, true},
     [0x21] = {"POP", FMT_R, FLAG_NONE, false, true},
     [0x40] = {"LOAD", FMT_I, FLAG_NONE, false, true},
+    [0x43] = {"LI", FMT_I, FLAG_NONE, false, true},
+    [0x44] = {"LUI", FMT_I, FLAG_NONE, false, true},
     [0x71] = {"ADD", FMT_R, (FLAG_Z | FLAG_O | FLAG_C), false, true},
 };
 
@@ -193,14 +196,16 @@ const char* isa_operands(uint8_t opcode, uint8_t instruction_format) {
         case (FMT_NONE): return "";
         case (FMT_R): {
             uint8_t OPS = ISA_OP_OPS(opcode);
-            if (OPS == 1) return "%u";
-            if (OPS == 2) return "%u %u";
-            return "%u %u %u";
+            if (OPS == 1) return "R%u";
+            if (OPS == 2) return "R%u, R%u";
+            return "R%u, R%u, R%u";
         }
         case (FMT_I): {
-            if (opcode == OP_LOAD) return "%u %u(%u)";
-            if (opcode == OP_STORE) return "%u(%u) %u";
-            return "%u %u %u";
+            if (opcode == OP_LOAD) return "R%u, %u(R%u)";
+            if (opcode == OP_STORE) return "%u(R%u), R%u";
+            if (opcode == OP_LI) return "R%u, %u";
+            if (opcode == OP_LUI) return "R%u, %u";
+            return "R%u, R%u, 0x%x";  // the branchers
         }
         case (FMT_J): return "%x";
         default: return "?";
@@ -249,32 +254,40 @@ void isa_disassemble_2(uint32_t word, char* buf, size_t buflen) {
     isa_opcode_info info = ISA_TABLE[isa_i->op];
     const char* mnemonic = isa_mnemonic(isa_i->op);
     const char* operands = isa_operands(isa_i->op, info.fmt);
+    size_t i = 0; while (i < BUFLEN && BUFFER0[i] != '\0') {BUFFER0[i] = '\0'; i += 1;}
+    i = 0; while (i < BUFLEN && BUFFER1[i] != '\0') {BUFFER1[i] = '\0'; i += 1;}
+
     if (info.fmt == FMT_NONE) {
-        sprintf(BUFFER, "%s", mnemonic);
+        sprintf(BUFFER1, "%s", mnemonic);
     } else {
-        sprintf(BUFFER, "%s %s", mnemonic, operands);
+        sprintf(BUFFER0, "%s %s", mnemonic, operands);
         switch (info.fmt) {
             case (FMT_R): {
-                sprintf(BUFFER, BUFFER, isa_i->rd, isa_i->rs1, isa_i->rs2);
+                sprintf(BUFFER1, BUFFER0, isa_i->rd, isa_i->rs1, isa_i->rs2);
                 break;
             }
             case (FMT_I): {
                 if (isa_i->op == OP_LOAD)
-                    sprintf(BUFFER, BUFFER, isa_i->rd, isa_i->imm, isa_i->rs1);
+                    sprintf(BUFFER1, BUFFER0, isa_i->rd, isa_i->imm, isa_i->rs1);
                 else if (isa_i->op == OP_STORE)
-                    sprintf(BUFFER, BUFFER, isa_i->imm, isa_i->rd, isa_i->rs1);
+                    sprintf(BUFFER1, BUFFER0, isa_i->imm, isa_i->rd, isa_i->rs1);
+                else if (isa_i->op == OP_LI)
+                    sprintf(BUFFER1, BUFFER0, isa_i->rd, isa_i->imm);
+                else if (isa_i->op == OP_LUI)
+                    sprintf(BUFFER1, BUFFER0, isa_i->rd, isa_i->imm);
                 else
-                    sprintf(BUFFER, BUFFER, isa_i->rd, isa_i->rs1, isa_i->imm);
+                    // the branchers
+                    sprintf(BUFFER1, BUFFER0, isa_i->rd, isa_i->rs1, isa_i->imm);
                 break;
             }
             case (FMT_J): {
-                sprintf(BUFFER, BUFFER, isa_i->addr);
+                sprintf(BUFFER1, BUFFER0, isa_i->addr);
                 break;
             }
             default: break;  // not possible
         }
     }
-    strncpy(buf, BUFFER, buflen - 1);
+    strncpy(buf, BUFFER1, buflen - 1);
 }
 
 void print_isa_table() {
@@ -297,11 +310,11 @@ void print_isa_table() {
             default: type = 'N'; break;
         }
         char Z = info.flags_set && FLAG_Z ? 'Z' : '-';
-        char O = info.flags_set && FLAG_O ? 'O' : ' ';
         char C = info.flags_set && FLAG_C ? 'C' : ' ';
+        char O = info.flags_set && FLAG_O ? 'O' : ' ';
         printf(
             "|%s   |%s %s   |%c   |%d  |%d  |%d  |%d  |0x%x|%c %c %c|\n",
-            mnemonic, mnemonic, operands, type, jmp, ops, alu, ins, opcode, Z, O, C);
+            mnemonic, mnemonic, operands, type, jmp, ops, alu, ins, opcode, Z, C, O);
     }
 
 }

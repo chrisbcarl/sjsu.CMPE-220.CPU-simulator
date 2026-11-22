@@ -1,5 +1,7 @@
-/*  
+/*
  *  Author: Donovan Burk
+ *  2026-11-22 - isa - Chris Carl - externed some of the defines for instructions.h to use
+ *  2026-11-19 - isa - Donovan Burk - structs, basic implement, compile, temps
  *  high level cycle() is repeat entry point after core_setup(), call core_teardown() to be nice :)
  *  each step has a function inside cycle()
  *  struct core holds everything? <-- unsure, might just have globals for each step
@@ -13,27 +15,45 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "isa.h"
+#include "instructions.h"
 
 #define RAMSIZE 1024
+
+extern uint32_t* ram;
 
 typedef struct IF {
     uint32_t pc;
 } IF;
 
-typedef struct F_D_bus {
-    uint32_t instr;
-} F_D_bus;
-
 typedef struct ID {
     uint32_t* registers;
+    uint8_t flags;          // LSB to MSB: ZCO
 } ID;
+
+typedef struct EX {
+    // add as needed?
+    uint8_t temp;
+} EX;
+
+typedef struct MEM {
+    // add as needed?
+    uint8_t temp;
+} MEM;
+
+typedef struct WB {
+    uint32_t* pc;
+    uint32_t** registers;
+} WB;
 
 // feel free to request more control sigs, will add in small PR's during branch work.
 // Only trim at safe points.
 
 typedef struct EX_ctrl {
     bool bypass; // sends data on bus right through
-    uint8_t alu_func;   
+    uint8_t operand_count;
+    uint8_t alu_func;
+    uint8_t instruction_number;
 } EX_ctrl;
 
 typedef struct MEM_ctrl {
@@ -50,31 +70,31 @@ typedef struct WB_ctrl {
     bool jump;  // can act as branch confirm
 } WB_ctrl;
 
+typedef struct F_D_bus {
+    uint32_t ir;
+} F_D_bus;
+extern F_D_bus FDbus;
+
 typedef struct D_E_bus {
     EX_ctrl ex_ctrl;
     MEM_ctrl mem_ctrl;
     WB_ctrl wb_ctrl;
     uint32_t dataA; // Operand 1, mem address
     uint32_t dataB; // Operand 2
-    uint32_t dataC; // ALU output, mem write data, branch target, reg writeback
+    uint8_t flags;
 } D_E_bus;
-
-typedef struct EX {
-    // add as needed?
-    uint8_t temp;
-} EX;
+extern D_E_bus DEbus;
 
 typedef struct E_M_bus {
+    EX_ctrl ex_ctrl;
     MEM_ctrl mem_ctrl;
     WB_ctrl wb_ctrl;
     uint32_t dataA;
-    uint32_t dataC;
+    uint32_t dataB;
+    uint32_t dataC; // ALU output, mem write data, branch target, reg writeback
+    uint8_t flags;
 } E_M_bus;
-
-typedef struct MEM {
-    // add as needed?
-    uint8_t temp;
-} MEM;
+extern E_M_bus EMbus;
 
 typedef struct MEM_bus {
     bool rd;
@@ -82,17 +102,17 @@ typedef struct MEM_bus {
     uint32_t addr;
     uint32_t wr_data;
     uint32_t rd_data;
+    uint8_t flags;
 } MEM_bus;
+extern MEM_bus MEMbus;
 
 typedef struct M_W_bus {
+    MEM_ctrl mem_ctrl;
     WB_ctrl wb_ctrl;
     uint32_t dataC;
+    uint8_t flags;
 } M_W_bus;
-
-typedef struct WB {
-    uint32_t* pc;
-    uint32_t** registers;
-} WB;
+extern M_W_bus MWbus;
 
 int core_setup();
 int cycle();
@@ -106,3 +126,10 @@ int memory();
 int writeBack();
 
 int mem_access();
+
+extern const void* INSTRUCTIONS_MEMORY[OPCODES];
+extern const void* INSTRUCTIONS_ARITHMETIC_2_OPS[OPCODES];
+extern const void* INSTRUCTIONS_ARITHMETIC_3_OPS[OPCODES];
+
+void core_dump(uint32_t cycle);
+void clear_busses();

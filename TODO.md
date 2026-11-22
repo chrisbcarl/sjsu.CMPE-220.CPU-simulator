@@ -1,29 +1,13 @@
-feature: isa ADD
-    MODIFY:
-    fetch
-    decode
-    execute
-    mem
-    wb
-
-    MODIFY:
-    isa_is_valid
-    isa_decode
-    isa_encode
-    isa_mnemonic
-    isa_disassemble
-    instructions file
-    test cases
+PROBLEMS:
+    - add/sub/mul/div signed???? fffuuuuuu
 
 unrelated
     linter ci/cd?
 
 phases
     - simple
-        diagram (data path)
         sample code
             compiled bytecode
-        ISA w/ opcodes
     - stretch
         logic
         l2 cache (RAM)
@@ -37,3 +21,4 @@ Contributors
 - ReverseBack2
 - jehuzepeda-silva-rgb
 - Bageldorf
+- sriharsha8000
