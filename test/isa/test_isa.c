@@ -1,6 +1,7 @@
 /*
  * 2026-11-17 - Sriharsha Edukulla - checks for initial HALT/NOP validation and disassembly (#26)
  * 2026-11-20 - Sriharsha Edukulla - ADD, POP and LOAD examples from PR review
+ * 2026-11-22 - Chris Carl - isa overhaul in prep for the instructions that we're implementing, need to check that they're done correctly
  *
  * Build and run from the repository root:
  * mkdir -p bin
@@ -11,8 +12,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
+#include "common.h"  // BUFFER
 #include "isa.h"
+
+#define assert(condition, failure_message, ...) \
+    if (!(condition)) {fprintf(stderr, failure_message __VA_OPT__(,) __VA_ARGS__); exit(1);}
 
 typedef struct {
     uint32_t word;
@@ -20,13 +26,24 @@ typedef struct {
 } disassembly_case;
 
 // Literal words let us check the bit layout without relying on isa_encode.
-static const disassembly_case instructions[] = {
+static const disassembly_case valid_instructions[] = {
     {0x00000000, "HALT"},
     {0x01000000, "NOP"},
     {0x71123000, "ADD R1, R2, R3"},
+    {0x71DEF000, "ADD R13, R14, R15"},
     {0x21C00000, "POP R12"},
     {0x40FD0045, "LOAD R15, 69(R13)"},
 };
+size_t valid_instruction_count = sizeof(valid_instructions) / sizeof(valid_instructions[0]);
+static const uint32_t invalid_instructions[] = {
+    0xDEADBEEF,
+    0xDEAD0000,
+    0xFFFFFFFF,
+    0xFF000000,
+    0x69000000,
+    0x69000FF,
+};
+size_t invalid_instruction_count = sizeof(invalid_instructions) / sizeof(invalid_instructions[0]);
 
 static unsigned int failures = 0;
 
@@ -65,12 +82,11 @@ static void check_disassembly(uint32_t word, const char* expected) {
     }
 }
 
-int main(void) {
-    size_t instruction_count = sizeof(instructions) / sizeof(instructions[0]);
+int test_sriharsha(void) {
     for (unsigned int opcode = 0; opcode < 256; opcode++) {
         bool expected = false;
-        for (size_t i = 0; i < instruction_count; i++) {
-            if ((instructions[i].word >> 24) == opcode) {
+        for (size_t i = 0; i < valid_instruction_count; i++) {
+            if ((valid_instructions[i].word >> 24) == opcode) {
                 expected = true;
                 break;
             }
@@ -87,8 +103,8 @@ int main(void) {
         }
     }
 
-    for (size_t i = 0; i < instruction_count; i++) {
-        check_disassembly(instructions[i].word, instructions[i].text);
+    for (size_t i = 0; i < valid_instruction_count; i++) {
+        check_disassembly(valid_instructions[i].word, valid_instructions[i].text);
     }
 
     // Unused bits should not become extra operands.
@@ -112,8 +128,127 @@ int main(void) {
 
     if (failures != 0) {
         fprintf(stderr, "%u ISA checks failed\n", failures);
-        return EXIT_FAILURE;
+        return failures;
     }
-    printf("ISA checks passed: %zu instructions, unsupported opcodes and buffer sizes\n", instruction_count);
+    printf("ISA checks passed: %zu instructions, unsupported opcodes and buffer sizes\n", valid_instruction_count);
+    return EXIT_SUCCESS;
+}
+
+int test_isa_is_valid(void) {
+    fprintf(stdout, "    INFO: test_isa_is_valid()\n");
+    for (size_t i = 0; i < valid_instruction_count; i++) {
+        uint32_t word = valid_instructions[i].word;
+        const char* text = valid_instructions[i].text;
+        assert(isa_is_valid(word >> 24), "ERROR: valid_instructions[%lu] = '%s' invalid!\n", i, text);
+    }
+    return EXIT_SUCCESS;
+}
+
+int test_isa_decode(void) {
+    fprintf(stdout, "    INFO: test_isa_decode()\n");
+    for (size_t i = 0; i < valid_instruction_count; i++) {
+        uint32_t word = valid_instructions[i].word;
+        const char* text = valid_instructions[i].text;
+        isa_instruction* instr = isa_decode(word);
+        assert(instr != NULL, "ERROR: valid_instructions[%lu] = '%s' could not create an isa instruction struct!\n", i, text);
+        free(instr);
+    }
+    for (size_t i = 0; i < invalid_instruction_count; i++) {
+        uint32_t word = invalid_instructions[i];
+        isa_instruction* instr = isa_decode(word);
+        assert(instr == NULL, "ERROR: invalid_instructions[%lu] = 0x%x is supposed to be invalid!\n", i, word);
+    }
+
+    return EXIT_SUCCESS;
+}
+
+int test_isa_encode(void) {
+    fprintf(stdout, "    INFO: test_isa_encode()\n");
+    for (size_t i = 0; i < valid_instruction_count; i++) {
+        uint32_t word = valid_instructions[i].word;
+        const char* text = valid_instructions[i].text;
+        isa_instruction* instr = isa_decode(word);
+        printf("        valid_instrs[%lu], '%s' - op: 0x%x | rd: 0x%x | rs1: 0x%x | rs2: 0x%x | imm: 0x%x | addr: 0x%x\n", i, text, instr->op, instr->rd, instr->rs1, instr->rs2, instr->imm, instr->addr);
+
+        uint32_t word2 = isa_encode(*instr);
+        assert(word == word2, "ERROR: decoded word[%lu] 0x%x != encoded 0x%x!", i, word, word2);
+        free(instr);
+    }
+
+    return EXIT_SUCCESS;
+}
+
+int test_isa_mnemonic(void) {
+    fprintf(stdout, "    INFO: test_isa_mnemonic()\n");
+    for (size_t i = 0; i < valid_instruction_count; i++) {
+        uint32_t word = valid_instructions[i].word;
+        const char* text = valid_instructions[i].text;
+
+        const char* mnemonic = isa_mnemonic(word >> 24);
+
+        // copy text's mnemonic to buffer, compare to mnemonic
+        size_t n = strlen(text);
+        BUFFER[n] = '\0';  // NOTE: give BUFFER a null termination otherwise compiler freaks out
+        strncpy(BUFFER, text, n);
+        int idx_space = indexof((char*)text, ' ');
+
+        // cannot use ternary statement due to int/size_t conversions
+        if (idx_space == -1) n = strlen(mnemonic);
+        else n = idx_space - 1;
+        assert(strncmp(mnemonic, BUFFER, n) == 0, "ERROR: valid[%lu] '%s' != '%s'!\n", i, BUFFER, mnemonic);
+    }
+
+    return EXIT_SUCCESS;
+}
+
+int test_isa_operands(void) {
+    fprintf(stdout, "    INFO: test_isa_operands()\n");
+    for (size_t i = 0; i < valid_instruction_count; i++) {
+        uint32_t word = valid_instructions[i].word;
+        const char* text = valid_instructions[i].text;
+
+        isa_opcode_info info = ISA_TABLE[word >> 24];
+        const char* operands = isa_operands(word >> 24, info.fmt);
+
+        // copy text's operands to buffer, compare to operands
+        size_t n = strcnt((char*)text, ' ');
+        size_t m = strlen(operands) == 0 ? 0 : strcnt((char*)operands, ' ') + 1;
+        // compare if number of spaces is the same (trite, i know)
+        assert(n == m, "ERROR: valid[%lu] operand count not the same! Spaces count '%s' != '%s'! %lu != %lu!\n", i, text, operands, n, m);
+    }
+
+    return EXIT_SUCCESS;
+}
+
+int test_isa_disassemble_2(void) {
+    fprintf(stdout, "    INFO: test_isa_disassemble_2()\n");
+    for (size_t i = 0; i < valid_instruction_count; i++) {
+        uint32_t word = valid_instructions[i].word;
+        const char* text = valid_instructions[i].text;
+
+        isa_disassemble(word, BUFFER, BUFLEN);
+        printf("        0x%x -> '%s'\n", word, BUFFER);
+        assert(strcmp(BUFFER, text) == 0, "ERROR: valid[%lu] '%s' != '%s'!", i, text, BUFFER);
+    }
+
+    return EXIT_SUCCESS;
+}
+
+int main(void) {
+    fprintf(stdout, "test_isa\n");
+    // test_sriharsha();  // I think it's treating everything thats not in the valid array as an invalid...
+    print_isa_table();
+    test_isa_is_valid();
+    test_isa_decode();
+    test_isa_encode();
+    test_isa_mnemonic();
+    test_isa_operands();
+    test_isa_disassemble_2();
+
+    if (failures != 0) {
+        fprintf(stderr, "FAILED! %u failures!\n", failures);
+        return failures;
+    }
+    printf("PASSED on %lu valid instructions, %lu invalid instructions!\n", valid_instruction_count, invalid_instruction_count);
     return EXIT_SUCCESS;
 }

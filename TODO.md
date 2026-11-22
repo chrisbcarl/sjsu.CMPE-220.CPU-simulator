@@ -1,9 +1,21 @@
-meetings
-    git/github review
+feature: isa ADD
+    MODIFY:
+    fetch
+    decode
+    execute
+    mem
+    wb
+
+    MODIFY:
+    isa_is_valid
+    isa_decode
+    isa_encode
+    isa_mnemonic
+    isa_disassemble
+    instructions file
+    test cases
 
 unrelated
-    better wrapper for https://cli.github.com/manual/gh_issue_create
-        current one doesn't prevent dupes...
     linter ci/cd?
 
 phases

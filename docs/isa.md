@@ -5,6 +5,7 @@
 |2026-11-10|Jehu Zepeda-Silva |Instruction table and R/I/J bit layout, matching `isa.h`       |
 |2026-11-17|Sriharsha Edukulla|Initial HALT/NOP validation and disassembly for issue #26      |
 |2026-11-20|Sriharsha Edukulla|Added ADD, POP and LOAD validation and disassembly after review|
+|2026-11-22|Chris Carl        |Sorted by opcode to compare with `test_isa.c`                  |
 
 32-bit instructions, 16 registers (`R0`–`R15`), destination leftmost. Source of truth: [`src/cpu/isa.h`](../src/cpu/isa.h).
 
@@ -62,6 +63,55 @@ bit:   7     6  5     4     3  2  1  0
 |`BGT`  |`BGT rd, rs1, label`|I   |1  |3  |1  |3  |`0xF3`|if rd > rs1: PC ← imm         |Z    |
 |`BLE`  |`BLE rd, rs1, label`|I   |1  |3  |1  |4  |`0xF4`|if rd ≤ rs1: PC ← imm         |Z    |
 |`BGE`  |`BGE rd, rs1, label`|I   |1  |3  |1  |5  |`0xF5`|if rd ≥ rs1: PC ← imm         |Z    |
+
+## Instructions by Opcode
+
+### Via `print_isa_table` in `test_isa.c`
+|Instr|Syntax        |Type|jmp|ops|alu|ins|Opcode|Flags|
+|---  |---           |--- |---|---|---|---|---   |---  |
+|HALT |HALT          |N   |0  |0  |0  |0  |0x0   |-    |
+|NOP  |NOP           |N   |0  |0  |0  |1  |0x1   |-    |
+|POP  |POP %u        |R   |0  |1  |0  |1  |0x21  |-    |
+|LOAD |LOAD %u %u(%u)|I   |0  |2  |0  |0  |0x40  |-    |
+|ADD  |ADD %u %u %u  |R   |0  |3  |1  |1  |0x71  |Z O C|
+
+### Original, Sorted by Opcode Ascending
+|Instr|Syntax            |Type|jmp|ops|alu|ins|Opcode|Flags|
+|---  |---               |--- |---|---|---|---|---   |---  |
+|HALT |HALT              |N   |0  |0  |0  |0  |0x00  |-    |
+|NOP  |NOP               |N   |0  |0  |0  |1  |0x01  |-    |
+|PUSH |PUSH rd           |R   |0  |1  |0  |0  |0x20  |-    |
+|POP  |POP rd            |R   |0  |1  |0  |1  |0x21  |-    |
+|LOAD |LOAD rd, imm(rs1) |I   |0  |2  |0  |0  |0x40  |-    |
+|STORE|STORE imm(rd), rs1|I   |0  |2  |0  |1  |0x41  |-    |
+|MOV  |MOV rd, rs1       |R   |0  |2  |0  |2  |0x42  |-    |
+|LI   |LI rd, imm        |I   |0  |2  |0  |3  |0x43  |-    |
+|LUI  |LUI rd, imm       |I   |0  |2  |0  |4  |0x44  |-    |
+|NOT  |NOT rd, rs1       |R   |0  |2  |1  |0  |0x50  |Z    |
+|NEG  |NEG rd, rs1       |R   |0  |2  |1  |1  |0x51  |Z O C|
+|CMP  |CMP rd, rs1, rs2  |R   |0  |3  |1  |0  |0x70  |Z    |
+|ADD  |ADD rd, rs1, rs2  |R   |0  |3  |1  |1  |0x71  |Z O C|
+|SUB  |SUB rd, rs1, rs2  |R   |0  |3  |1  |2  |0x72  |Z O C|
+|MUL  |MUL rd, rs1, rs2  |R   |0  |3  |1  |3  |0x73  |Z    |
+|DIV  |DIV rd, rs1, rs2  |R   |0  |3  |1  |4  |0x74  |Z    |
+|ADDI |ADDI rd, rs1, imm |I   |0  |3  |1  |5  |0x75  |Z O C|
+|AND  |AND rd, rs1, rs2  |R   |0  |3  |1  |9  |0x79  |Z    |
+|OR   |OR rd, rs1, rs2   |R   |0  |3  |1  |10 |0x7A  |Z    |
+|XOR  |XOR rd, rs1, rs2  |R   |0  |3  |1  |11 |0x7B  |Z    |
+|SL   |SL rd, rs1, rs2   |R   |0  |3  |1  |12 |0x7C  |Z    |
+|SR   |SR rd, rs1, rs2   |R   |0  |3  |1  |13 |0x7D  |Z    |
+|SLA  |SLA rd, rs1, rs2  |R   |0  |3  |1  |14 |0x7E  |Z    |
+|SRA  |SRA rd, rs1, rs2  |R   |0  |3  |1  |15 |0x7F  |Z    |
+|RET  |RET               |N   |1  |0  |0  |0  |0x80  |-    |
+|JUMP |JUMP label        |J   |1  |1  |0  |0  |0xA0  |-    |
+|JR   |JR rd             |R   |1  |1  |0  |1  |0xA1  |-    |
+|CALL |CALL label        |J   |1  |1  |0  |2  |0xA2  |-    |
+|BEQ  |BEQ rd, rs1, label|I   |1  |3  |1  |0  |0xF0  |Z    |
+|BNQ  |BNQ rd, rs1, label|I   |1  |3  |1  |1  |0xF1  |Z    |
+|BLT  |BLT rd, rs1, label|I   |1  |3  |1  |2  |0xF2  |Z    |
+|BGT  |BGT rd, rs1, label|I   |1  |3  |1  |3  |0xF3  |Z    |
+|BLE  |BLE rd, rs1, label|I   |1  |3  |1  |4  |0xF4  |Z    |
+|BGE  |BGE rd, rs1, label|I   |1  |3  |1  |5  |0xF5  |Z    |
 
 ## Validation and disassembly
 

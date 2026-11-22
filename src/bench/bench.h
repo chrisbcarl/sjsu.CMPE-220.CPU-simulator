@@ -4,12 +4,6 @@
 // stdlib
 
 // project
-#include <gates.h>
-#include <arithmetic.h>
-#include <logic.h>
-#include <registers.h>
-#include <alu.h>
-#include <cpu-simple.h>
 
 int test_bench_gates();
 int test_bench_arithmetic();

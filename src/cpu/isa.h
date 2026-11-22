@@ -19,7 +19,8 @@
  *
  * 2026-11-10 12:30 - isa - Jehu Zepeda-Silva - isa.h added (opcodes, formats, flags, API)
  * 2026-11-17 - Sriharsha Edukulla - documented initial HALT/NOP support (#26)
- * 
+ * 2026-11-22 - Chris Carl - added OPCODES, isa_instruction_constructor, isa_decode is a pointer, isa_disassemble_2, and print_isa_table
+ *
  * Bare essentials: machine constants, field layout (shift/mask for
  * encode/decode), opcode fields and the opcode enum.
  *
@@ -40,7 +41,7 @@
  *
  *   ISA_TABLE - 256-entry (8 bits for opcode = 2^8 possible opcodes = 256) lookup indexed by opcode. Essentially Facts about each opcode live in one place;
  *   unused opcodes are all zeros (mnemonic == NULL). (ISA_TABLE[OP_ADD].flags_set  -> FLAG_Z|FLAG_O|FLAG_C)
- * 
+ *
  *   Example, all together: 0x71123000
  *     op = word >> 24 = 0x71 -> ISA_TABLE[0x71] = {"ADD", FMT_R, Z|O|C}
  *     FMT_R -> decode gives {OP_ADD, rd=1, rs1=2, rs2=3} (isa_instruction)
@@ -57,7 +58,7 @@
 /* ---------- machine constants ---------- */
 #define ISA_WORD_BITS 32
 #define ISA_NUM_GPRS 16   // R0..R15 (4-bit register fields)
-// 2 SPR ? 
+// 2 SPR ?
 #define ISA_REG_LR 14   // link register (return address for CALL/RET)
 #define ISA_REG_SP 15   // stack pointer (PUSH/POP); stack grows down
 
@@ -75,7 +76,7 @@
 #define ISA_OPCODE_SHIFT 24
 #define ISA_RD_SHIFT 20
 #define ISA_RS1_SHIFT 16
-#define ISA_RS2_SHIFT 12   // imm16 and address24 have no shift
+#define ISA_RS2_SHIFT 12   // imm16 and address24 have no shift, 0-11 are unused in R-type
 
 #define ISA_OPCODE_MASK 0xFFu
 #define ISA_REG_MASK 0xFu
@@ -104,6 +105,8 @@
 #define ISA_OP_OPS(op) (((op) >> 5) & 3u)
 #define ISA_OP_ALU(op) (((op) >> 4) & 1u)
 #define ISA_OP_INS(op) ((op) & 0xFu)
+
+#define OPCODES 256
 
 /* ---------- opcodes ----------
  * Syntax is "MNEMONIC dest, src, src": destination leftmost.
@@ -175,6 +178,7 @@ typedef enum {
 #define FLAG_Z (1u << 0)  // zero: result == 0
 #define FLAG_C (1u << 1)  // carry: unsigned overflow
 #define FLAG_O (1u << 2)  // overflow: signed overflow
+#define FLAG_NONE (0u)    // no flags are set high at all
 
 /* ---------- memory-mapped I/O (STORE to these prints) ---------- */
 #define MMIO_PUTCHAR 0xFF00  // print low byte as ASCII
@@ -198,6 +202,7 @@ typedef struct {
     isa_format fmt;
     uint8_t flags_set;   // FLAG_* bits this op updates
     bool imm_signed;  // I-type: sign-extend imm16 (false = zero-extend)
+    bool valid;  // false--so MOST of ISA_TABLE will have !valid ISA opcode info
 } isa_opcode_info;
 
 /* Indexed by opcode
@@ -208,13 +213,17 @@ typedef struct {
  *   branches ...................... Z   (from their internal compare)
  *   memory, move, jumps, stack .... none
  */
-extern const isa_opcode_info ISA_TABLE[256];
+extern const isa_opcode_info ISA_TABLE[OPCODES];
 
 /* ---------- API ---------- */
 bool isa_is_valid(uint8_t opcode);
-isa_instruction isa_decode(uint32_t word);                            // word → fields
+isa_instruction* isa_instruction_constructor();
+isa_instruction* isa_decode(uint32_t word);                            // word → fields
 uint32_t isa_encode(isa_instruction inst);                     // fields → word
 const char* isa_mnemonic(uint8_t opcode);                         // "ADD" or NULL
+const char* isa_operands(uint8_t opcode, uint8_t instruction_format);   // switch on the format, FMT_I, FMT_J, etc.
 void isa_disassemble(uint32_t word, char* buf, size_t buflen);
+void isa_disassemble_2(uint32_t word, char* buf, size_t buflen);  // alternate way of doing isa_disassemble
+void print_isa_table();
 
 #endif
