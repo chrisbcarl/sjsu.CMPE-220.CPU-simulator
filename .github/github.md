@@ -4,9 +4,11 @@ Doc about GitHub, tips, tricks, techniques, etc.
 # Automated Issue Creation
 ```powershell
 choco install gh -y
-gh auth login  # skip ssh option
+gh auth login  # interactive
+gh auth login --web=true --git-protocol ssh --skip-ssh-key=true  # chriscarl preferred
 gh auth refresh -h github.com -s admin:public_key
-gh ssh-key add --title "envy-fc0033dx" ~/.ssh/id_ed25519.pub
+gh ssh-key add --title $env:COMPUTERNAME ~/.ssh/id_rsa.pub  # tab complete on windows, ~ doesnt work
+
 ```
 
 ```log
