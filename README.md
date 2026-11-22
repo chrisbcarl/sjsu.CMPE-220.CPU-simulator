@@ -72,14 +72,14 @@ make -f ./Makefile
 
 # Authors
 
-|Name               |Email                         |Github Username           |Contributions                                                                      |
-|-------------------|------------------------------|--------------------------|-----------------------------------------------------                              |
+|Name               |Email                         |Github Username           |Contributions                                                                                             |
+|-------------------|------------------------------|--------------------------|-----------------------------------------------------                                                     |
 |Chris Carl         |<chris.carl@sjsu.edu>         |chrisbcarl, chriscarl-sjsu|Project management, dev ops, code architecture design, initial Fetch-Decode-Execute, core dump, ADD/LI/LUI|
-|Harsha Krishnaswamy|<harsha.krishnaswamy@sjsu.edu>|harshakrishna15           |Example Programs                                                                   |
-|Donovan Burk       |<donovan.burk@sjsu.edu>       |ReverseBack2              |Core Diagram/Structs                                                               |
-|Jehu Zepeda-Silva  |<jehu.zepeda-silva@sjsu.edu>  |jehuzepeda-silva-rgb      |ISA Definition                                                                     |
-|Mark Haiko         |<mark.haiko@sjsu.edu>         |Bageldorf                 |Example Programs                                                                   |
-|Sriharsha Edukulla |<sriharsha.edukulla@sjsu.edu> |sriharsha8000             |ISA validation and disassembly                                                     |
+|Harsha Krishnaswamy|<harsha.krishnaswamy@sjsu.edu>|harshakrishna15           |Example Programs                                                                                          |
+|Donovan Burk       |<donovan.burk@sjsu.edu>       |ReverseBack2              |Core Diagram/Structs                                                                                      |
+|Jehu Zepeda-Silva  |<jehu.zepeda-silva@sjsu.edu>  |jehuzepeda-silva-rgb      |ISA Definition                                                                                            |
+|Mark Haiko         |<mark.haiko@sjsu.edu>         |Bageldorf                 |Example Programs                                                                                          |
+|Sriharsha Edukulla |<sriharsha.edukulla@sjsu.edu> |sriharsha8000             |ISA validation and disassembly                                                                            |
 
 ## AI Disclaimer
 

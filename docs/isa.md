@@ -6,7 +6,7 @@
 |2026-11-17|Sriharsha Edukulla|Initial HALT/NOP validation and disassembly for issue #26      |
 |2026-11-20|Sriharsha Edukulla|Added ADD, POP and LOAD validation and disassembly after review|
 |2026-11-22|Chris Carl        |Sorted by opcode to compare with `test_isa.c`                  |
-|2026-11-22|Chris Carl        |Added "implemented" column and how-to guide.                                    |
+|2026-11-22|Chris Carl        |Added "implemented" column and how-to guide.                   |
 
 32-bit instructions, 16 registers (`R0`–`R15`), destination leftmost. Source of truth: [`src/cpu/isa.h`](../src/cpu/isa.h).
 
@@ -79,13 +79,15 @@ bit:   7     6  5     4     3  2  1  0
 ## Instructions by Opcode
 
 ### Via `print_isa_table` in `test_isa.c`
-|Instr|Syntax        |Type|jmp|ops|alu|ins|Opcode|Flags|
-|---  |---           |--- |---|---|---|---|---   |---  |
-|HALT |HALT          |N   |0  |0  |0  |0  |0x0   |-    |
-|NOP  |NOP           |N   |0  |0  |0  |1  |0x1   |-    |
-|POP  |POP %u        |R   |0  |1  |0  |1  |0x21  |-    |
-|LOAD |LOAD %u %u(%u)|I   |0  |2  |0  |0  |0x40  |-    |
-|ADD  |ADD %u %u %u  |R   |0  |3  |1  |1  |0x71  |Z C O|
+|Instr|Syntax           |Type|jmp|ops|alu|ins|Opcode|Flags|
+|---  |---              |--- |---|---|---|---|---   |---  |
+|HALT |HALT             |N   |0  |0  |0  |0  |0x0   |-    |
+|NOP  |NOP              |N   |0  |0  |0  |1  |0x1   |-    |
+|POP  |POP R%u          |R   |0  |1  |0  |1  |0x21  |-    |
+|LOAD |LOAD R%u, %u(R%u)|I   |0  |2  |0  |0  |0x40  |-    |
+|LI   |LI R%u, %u       |I   |0  |2  |0  |3  |0x43  |-    |
+|LUI  |LUI R%u, %u      |I   |0  |2  |0  |4  |0x44  |-    |
+|ADD  |ADD R%u, R%u, R%u|R   |0  |3  |1  |1  |0x71  |Z C O|
 
 ### Original, Sorted by Opcode Ascending
 |Instr|Syntax            |Type|jmp|ops|alu|ins|Opcode|Flags|
