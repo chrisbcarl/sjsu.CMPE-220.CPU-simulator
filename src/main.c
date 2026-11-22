@@ -17,7 +17,7 @@ make -f CMPE-220/assignments/project/Makefile
 #include "core.h"
 
 bool DEBUG = true;
-uint32_t CYCLES = 5;
+uint32_t MAX_CLOCK = 5;
 
 
 int main(int argc, char** argv) {
@@ -34,15 +34,15 @@ int main(int argc, char** argv) {
 
     printf("INFO: running\n");
 
-    int res = cycle(0); uint32_t cycles = 0;
-    while (res == 0 && cycles < CYCLES) {
-        if (DEBUG) core_dump(cycles);
+    int res = cycle(); uint32_t clk = 0;
+    while (res == 0 && clk < MAX_CLOCK) {
+        if (DEBUG) core_dump(clk);
         clear_busses();
-        if (res != 0) fprintf(stderr, "ERROR: failed at step %d, cycle %u!\n", res, cycles);
+        if (res != 0) fprintf(stderr, "ERROR: failed at step %d, clock %u!\n", res, clk);
 
-        res = cycle(cycles); cycles += 1;
+        res = cycle(); clk += 1;
     };
-    core_dump(cycles);
+    core_dump(clk);
 
     printf("INFO: teardown\n");
     core_teardown();
