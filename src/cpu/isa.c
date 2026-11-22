@@ -4,7 +4,6 @@
  * 2026-11-10 12:30 - isa - Jehu Zepeda-Silva - APIs for decoding/encoding
  * 2026-11-17 - Sriharsha Edukulla - initial HALT/NOP validation and disassembly (#26)
  * 2026-11-20 - Sriharsha Edukulla - add ADD, POP and LOAD disassembly after review
- * 2026-11-21 - Chris Carl - add scafolding everywhere, implement ADD explicitly
  * 2026-11-22 - Chris Carl - added OPCODES, isa_instruction_constructor, isa_decode is a pointer, isa_disassemble_2, and print_isa_table
  */
 #include <inttypes.h>
@@ -25,7 +24,7 @@ const isa_opcode_info ISA_TABLE[OPCODES] = {
 
 bool isa_is_valid(uint8_t opcode) {
     switch (opcode) {
-        // memory
+        // none
         case OP_HALT:
         case OP_NOP:
         case OP_RET:
