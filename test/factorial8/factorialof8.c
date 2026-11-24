@@ -10,5 +10,5 @@ for (int i = 1; i < 8; i++) {
 }
 printf("%d", num);
 
-return num;
+return 0;  // 0 for success, non-zero for failure, was num
 }

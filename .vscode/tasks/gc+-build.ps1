@@ -8,13 +8,18 @@ Dependencies:
 Example:
     gc+-build.ps1 g++ ./src /bin/main
     gc+-build.ps1 -e g++ -main ./src/main.cpp -o /bin/main
+
+Updates:
+    2026-11-22 - Chris Carl - gc+-build.ps1 - added a -I so tasks.json can forcefully pipe ./src in there
+
 #>
 
 [CmdletBinding()]
 param (
     [Parameter()][string]$e="g++",
-    [Parameter()][string]$d="",
-    [Parameter()][string]$main,
+    [Parameter(Mandatory=$true)][string]$d="",
+    [Parameter(Mandatory=$true)][string]$I="",
+    [Parameter(Mandatory=$true)][string]$main,
     [Parameter(Mandatory=$true)][string]$o
 )
 
@@ -40,16 +45,17 @@ Write-Host -ForegroundColor Cyan "mkdir '$OutputDirpath'"
 New-Item -Path $OutputDirpath -ItemType Directory -ErrorAction SilentlyContinue
 
 # args
-$HFiles = $( $( Get-ChildItem -Path $d -Recurse -File -Include *.h | Resolve-Path -Relative))
-# $( $( Get-ChildItem -Path $d -Recurse -Directory | Resolve-Path -Relative | ForEach-Object {'-I' + $_}))
+$HFiles = (@($I, $d) | ForEach-Object {Get-ChildItem -Path $_ -Recurse -File -Include *.h} | Resolve-Path -Relative)
+# (Get-ChildItem -Path $d -Recurse -Directory | Resolve-Path -Relative | ForEach-Object {'-I' + $_})
 $Includes = $HFiles | ForEach-Object { Split-Path $_ -Parent } | Sort-Object -Unique | ForEach-Object {'-I' + $_}
-$Sources = $( $( Get-ChildItem -Path $d -Recurse -File -Include *.c,*.cc,*.cpp | Resolve-Path -Relative))
+$Sources = (@($I, $d) | ForEach-Object {Get-ChildItem -Path $_ -Recurse -File -Include *.c,*.cc,*.cpp} | Resolve-Path -Relative)
 $main = $main | Resolve-Path -Relative
 # scan sources for int main, omit them. we're only using the main file's main. everything else would be in conflict.
 $Sources = $Sources | Where-Object { -Not (Select-String -Path $_ -Pattern "int main\(") }
 
 
-$ArgumentList = @($main) + @($Sources) + @($Includes) + @('-fdiagnostics-color=always', '-g', '-o', $o)
+# -g for GDB
+$ArgumentList = @("-g") + @($main) + @($Sources) + @($Includes) + @('-fdiagnostics-color=always', '-g', '-o', $o)
 
 if ($Debug) {
     Write-Host "DEBUG: Includes - $Includes"

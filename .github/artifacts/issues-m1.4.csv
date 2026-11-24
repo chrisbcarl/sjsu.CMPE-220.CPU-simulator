@@ -1,0 +1,5 @@
+milestone,title,label,assignee,blocked-by,description,steps
+m2,feature: UI,feature,,,"Create a (CL) User Interface for this simulator.","Should support:
+- running a text file. ./bin/cpu -f something.isa should return output of a core dump
+- stretch goal: interpreter, basically a while loop and you get to type whatever you want, it gets validated, and maybe even run (if valid)!
+"
