@@ -2,6 +2,7 @@
 run through the gammut of possible functions
 
 2026-10-10 21:02 - bench.c - now we've got gates, arithmetic, logic, registers, and alu tested for.
+2026-11-22 - bench.c - chris carl - removed simple-cpu
 */
 
 // stdlib
@@ -12,7 +13,11 @@ run through the gammut of possible functions
 #include <stddef.h>  // size_t
 
 // project
-#include <bench.h>
+#include <gates.h>
+#include <arithmetic.h>
+#include <logic.h>
+#include <registers.h>
+#include <alu.h>
 
 
 int test_bench_gates() {
@@ -297,15 +302,6 @@ int test_bench_alu() {
         S[0], S[1], S[2], S[3], S[4], S[5], S[6], S[7],
         FLAGS.carry);
 
-
-    return EXIT_SUCCESS;
-}
-
-int test_bench_cpu_simple() {
-    printf("--------------------------------------------------------------------------------\n");
-    printf("TEST BENCH CPU SIMPLE\n");
-    printf("    - cpu_create(32, 16, 4, 256)\n");
-    CPU cpu = cpu_create(32, 16, 4, 256);
 
     return EXIT_SUCCESS;
 }
