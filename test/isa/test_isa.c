@@ -1,12 +1,12 @@
 /*
- * 2026-11-17 - Sriharsha Edukulla - checks for initial HALT/NOP validation and disassembly (#26)
- * 2026-11-20 - Sriharsha Edukulla - ADD, POP and LOAD examples from PR review
- * 2026-11-22 - Chris Carl - isa overhaul in prep for the instructions that we're implementing, need to check that they're done correctly
- * 2026-11-22 - Chris Carl - test_isa.c - added LI, LUI
+ * 2026-11-17 - Sriharsha Edukulla - test_isa.c - checks for initial HALT/NOP validation and disassembly (#26)
+ * 2026-11-20 - Sriharsha Edukulla - test_isa.c - ADD, POP and LOAD examples from PR review
+ * 2026-11-22 - Chris Carl - test_isa.c - isa overhaul in prep for the instructions that we're implementing, need to check that they're done correctly
+ * 2026-11-23 - Chris Carl - test_isa.c - added LI, LUI, ADD
  *
  * Build and run from the repository root:
  * mkdir -p bin
- * cc -std=c11 -Wall -Wextra -Isrc src/common.c -Isrc/cpu src/cpu/isa.c test/isa/test_isa.c -o bin/test_isa
+ * cc -std=c11 -Wall -Wextra -I./src/utilities src/utilities/common.c -Isrc/cpu src/cpu/isa.c test/isa/test_isa.c -o bin/test_isa
  * ./bin/test_isa
  */
 #include <inttypes.h>
@@ -15,11 +15,8 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "common.h"  // BUFFER0
+#include "common.h"  // BUFFER0, assert
 #include "isa.h"
-
-#define assert(condition, failure_message, ...) \
-    if (!(condition)) {fprintf(stderr, failure_message __VA_OPT__(,) __VA_ARGS__); exit(1);}
 
 typedef struct {
     uint32_t word;

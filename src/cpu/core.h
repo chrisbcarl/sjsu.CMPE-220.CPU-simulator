@@ -133,3 +133,6 @@ extern const void* INSTRUCTIONS_ARITHMETIC_3_OPS[OPCODES];
 
 void core_dump(uint32_t cycle);
 void clear_busses();
+int run(uint32_t clocks, bool debug);
+uint32_t get_register_value(uint8_t reg_target);
+uint8_t get_flags();

@@ -1,13 +1,8 @@
-PROBLEMS:
-    - add/sub/mul/div signed???? fffuuuuuu
-
 unrelated
     linter ci/cd?
 
 phases
-    - simple
-        sample code
-            compiled bytecode
+    - instruction implementation
     - stretch
         logic
         l2 cache (RAM)

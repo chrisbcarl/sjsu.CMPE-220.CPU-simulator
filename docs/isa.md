@@ -6,7 +6,7 @@
 |2026-11-17|Sriharsha Edukulla|Initial HALT/NOP validation and disassembly for issue #26      |
 |2026-11-20|Sriharsha Edukulla|Added ADD, POP and LOAD validation and disassembly after review|
 |2026-11-22|Chris Carl        |Sorted by opcode to compare with `test_isa.c`                  |
-|2026-11-22|Chris Carl        |Added "implemented" column and how-to guide.                   |
+|2026-11-23|Chris Carl        |Added "implemented" column and how-to guide.                   |
 
 32-bit instructions, 16 registers (`R0`–`R15`), destination leftmost. Source of truth: [`src/cpu/isa.h`](../src/cpu/isa.h).
 
@@ -55,13 +55,13 @@ bit:   7     6  5     4     3  2  1  0
 |X          |`LI`   |`LI rd, imm`        |I   |0  |2  |0  |3  |`0x43`|rd ← imm (zero-extended)      |—    |
 |X          |`LUI`  |`LUI rd, imm`       |I   |0  |2  |0  |4  |`0x44`|rd ← imm << 16                |—    |
 |           |`NOT`  |`NOT rd, rs1`       |R   |0  |2  |1  |0  |`0x50`|rd ← ~rs1                     |Z    |
-|           |`NEG`  |`NEG rd, rs1`       |R   |0  |2  |1  |1  |`0x51`|rd ← −rs1                     |Z O C|
+|           |`NEG`  |`NEG rd, rs1`       |R   |0  |2  |1  |1  |`0x51`|rd ← −rs1                     |Z C O|
 |           |`CMP`  |`CMP rd, rs1, rs2`  |R   |0  |3  |1  |0  |`0x70`|rd ← (rs1 − rs2 ≠ 0) ? 1 : 0  |Z    |
-|X          |`ADD`  |`ADD rd, rs1, rs2`  |R   |0  |3  |1  |1  |`0x71`|rd ← rs1 + rs2                |Z O C|
-|           |`SUB`  |`SUB rd, rs1, rs2`  |R   |0  |3  |1  |2  |`0x72`|rd ← rs1 − rs2                |Z O C|
+|X          |`ADD`  |`ADD rd, rs1, rs2`  |R   |0  |3  |1  |1  |`0x71`|rd ← rs1 + rs2                |Z C O|
+|           |`SUB`  |`SUB rd, rs1, rs2`  |R   |0  |3  |1  |2  |`0x72`|rd ← rs1 − rs2                |Z C O|
 |           |`MUL`  |`MUL rd, rs1, rs2`  |R   |0  |3  |1  |3  |`0x73`|rd ← low 32 bits of rs1 × rs2 |Z    |
 |           |`DIV`  |`DIV rd, rs1, rs2`  |R   |0  |3  |1  |4  |`0x74`|rd ← rs1 ÷ rs2                |Z    |
-|           |`ADDI` |`ADDI rd, rs1, imm` |I   |0  |3  |1  |5  |`0x75`|rd ← rs1 + imm (sign-extended)|Z O C|
+|           |`ADDI` |`ADDI rd, rs1, imm` |I   |0  |3  |1  |5  |`0x75`|rd ← rs1 + imm (sign-extended)|Z C O|
 |           |`AND`  |`AND rd, rs1, rs2`  |R   |0  |3  |1  |9  |`0x79`|rd ← rs1 & rs2                |Z    |
 |           |`OR`   |`OR rd, rs1, rs2`   |R   |0  |3  |1  |10 |`0x7A`|rd ← rs1 OR rs2               |Z    |
 |           |`XOR`  |`XOR rd, rs1, rs2`  |R   |0  |3  |1  |11 |`0x7B`|rd ← rs1 ^ rs2                |Z    |

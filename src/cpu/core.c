@@ -1,5 +1,6 @@
 /*
  *  Author: Donovan Burk
+ *  2026-11-23 - Chris Carl - core.c - fetch "errors" if pc >= RAMSIZE, added get_register_value, get_flags, run
  *  2026-11-22 - Chris Carl - core.c - dummy implementation for fetch/decode/execute/mem/wb (not so dummy)
  *  2026-11-19 - Donovan Burk - core.c - structs, basic implement, compile, temps
  *  high level cycle() is repeat entry point after core_setup(), call core_teardown() to be nice :)
@@ -11,6 +12,7 @@
 */
 #include <stdio.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #include "common.h"
 #include "core.h"
@@ -62,6 +64,11 @@ int core_teardown() {
 int fetch() {
     FDbus.ir = ram[if_s.pc];
     if_s.pc += 1;  // 4 byte increment since +(1 x 32 bits)
+    if (if_s.pc == RAMSIZE) {
+        // if_s.pc = 0;  // or just loopback
+        fprintf(stderr, "ERROR: pc incremented above RAMSIZE! pc = 0x%x\n", if_s.pc);
+        return 1;
+    }
     return 0;
 }
 
@@ -208,6 +215,7 @@ void core_dump(uint32_t cycle) {
         printf("R%lu: 0x%08x | ", i, id_s.registers[i]);
     }
     printf("\n    SPRS: PC: 0x%08x | IR: 0x%08x | FLAGS: 0x%08x", if_s.pc, FDbus.ir, id_s.flags);
+    printf("\n    Z: %01d | C: %01d | O: %01d", FLAG_Z_OF(id_s.flags), FLAG_C_OF(id_s.flags), FLAG_O_OF(id_s.flags));
     printf("\n    MEM (+/- 4):\n");
     uint32_t start = 0, end = 0;
     if (if_s.pc - 4 > 0xFFFFFFFB) start = 0; else start = if_s.pc - 4;
@@ -244,4 +252,29 @@ void clear_busses() {
     MWbus.wb_ctrl = EMbus.wb_ctrl = DEbus.wb_ctrl;
     EMbus.dataC = 0;
     MWbus.dataC = 0;
+}
+
+int run(uint32_t clocks, bool debug) {
+    int res = cycle(); uint32_t clk = 0;
+    while (res == 0 && clk < clocks) {
+        if (debug) core_dump(clk);
+        clear_busses();
+        if (res != 0) {
+            fprintf(stderr, "ERROR: failed at step %d, clock %u!\n", res, clk);
+            return res;
+        }
+
+        res = cycle();
+        clk += 1;
+    };
+    core_dump(clk);
+    return EXIT_SUCCESS;
+}
+
+uint32_t get_register_value(uint8_t reg_target) {
+    return id_s.registers[reg_target];
+}
+
+uint8_t get_flags() {
+    return id_s.flags;
 }

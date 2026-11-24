@@ -8,7 +8,7 @@ int num = 1;
 for (int i = 1; i < 8; i++) {
     num += num * i;
 }
-printf("%d", num);
+printf("%d\n", num);
 
-return num;
+return 0;  // indicate success
 }
