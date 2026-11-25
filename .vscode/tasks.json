@@ -77,7 +77,7 @@
                 "command": "powershell",
                 "args": [
                     // custom wrapper for gcc, injects -I./src every time since even tests need that
-                    "${workspaceFolder}/.vscode/tasks/gc+-build.ps1", "-e", "gcc", "-d", "${relativeFileDirname}", "-I", "${workspaceFolder}/src", "-m", "${file}", "-o", "${workspaceFolder}/bin/${fileBasenameNoExtension}", "-Debug"
+                    "${workspaceFolder}/.vscode/tasks/gc+-build.ps1", "-exe", "gcc", "-src", "${workspaceFolder}/src", "-main", "${file}", "-out", "${workspaceFolder}/bin/${fileBasenameNoExtension}", "-Debug"
                 ]
             },
             "options": {

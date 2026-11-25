@@ -1,12 +1,13 @@
-FIX:
-    - void pointer casting
-        - all instrs have same interface?? just dont use all
-        - funcs in isa.c as void pointers? cast later?
-            void (*itype)(uint32_t* rd, uint16_t* imm);
-            void (*binary)(uint32_t* rd, uint32_t* rs1, uint8_t* flags);
-            void (*trinary)(uint32_t* rd, uint32_t* rs1, uint32_t* rs2, uint8_t* flags);
+DO:
+    look at the diagram, it has all of the info for gods sake
 
+    core dump in program order (msb first)
 
+BUGS:
+    unhalt (once halted, can't unhalt)
+
+meetings
+    git/github review
 
 unrelated
     linter ci/cd?

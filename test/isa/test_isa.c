@@ -157,6 +157,7 @@ int test_isa_decode(void) {
         uint32_t word = invalid_instructions[i];
         isa_instruction* instr = isa_decode(word);
         assert(instr == NULL, "ERROR: isa_decode - invalid_instructions[%lu] = 0x%x is supposed to be invalid!\n", i, word);
+        free(instr);
     }
 
     return EXIT_SUCCESS;
