@@ -1,0 +1,27 @@
+milestone,title,label,assignee,blocked-by,description,steps
+m2,feature: UI,feature,,,"Create a (CL) User Interface for this simulator.","Should support:
+- running a text file. ./bin/cpu -f something.isa should return output of a core dump
+- stretch goal: interpreter, basically a while loop and you get to type whatever you want, it gets validated, and maybe even run (if valid)!"
+m2,feature: source - fibonacci,,,,"Create a fibonacci program (recursive)","Create:
+- /test/fib/fib.bin (binary)
+- /test/fib/fib.asm
+- /test/fib/fib.c"
+m2,feature: source - tower-of-hanoi,,,,"Create a tower of hanoi program (recursive)","Create:
+- ./test/tower-of-hanoi/tower-of-hanoi.bin (binary)
+- ./test/tower-of-hanoi/tower-of-hanoi.asm
+- ./test/tower-of-hanoi/tower-of-hanoi.c"
+m2,feature: assembler/disassembler,,,,"Create an assembler and a disassembler","Create:
+- apps/assembler.c
+- apps/disassembler.c
+
+Run:
+- assembler on each of our example code .isa, make sure it creates the .bin files.
+- disassembler on each of our example code .bin, make sure it creates the .isa files.
+
+Model your work after `test\exponentiation\exponential-5.bin and .isa`. That one preserves comments so that'd be a bonus.
+"
+m2,feature: core dump fmt,,,feature: UI,"Change the core dump format!","Currently the core_dump only outputs in hex. Wouldnt it be nice to change that to decimal or float or whatever?"
+r1,feature: ieee-753,,,,"Add floating point math!","Thats gonna be pretty tricky. Start with single precision then double precision."
+r1,docs: doxygen,,,,"Create a doxygen compliant browsable docs. Host it on github.","As it says on the tin."
+m2,bug: halt,,,,"Once you've halted, you can never unhalt...","As it says on the tin."
+m2,bug: test_sriharsha,,sriharsha8000,,"is test_sriharsha operating as intended?","As it says on the tin."

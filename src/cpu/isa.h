@@ -276,7 +276,7 @@ extern const isa_opcode_info ISA_TABLE[OPCODES];
 bool isa_is_valid(uint8_t opcode);
 isa_instruction* isa_instruction_constructor();
 isa_instruction* isa_decode(uint32_t word);                            // word → fields
-uint32_t isa_encode(isa_instruction inst);                     // fields → word
+uint32_t isa_encode(isa_instruction* inst);                     // fields → word
 const char* isa_mnemonic(uint8_t opcode);                         // "ADD" or NULL
 const char* isa_operands(uint8_t opcode, uint8_t instruction_format);   // switch on the format, FMT_I, FMT_J, etc.
 void isa_disassemble(uint32_t word, char* buf, size_t buflen);

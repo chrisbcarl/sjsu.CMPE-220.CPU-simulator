@@ -1,25 +1,18 @@
-DO:
-    look at the diagram, it has all of the info for gods sake
+# Bugs
+- `[ ]` unhalt (once halted, can't unhalt)
 
-    core dump in program order (msb first)
+# Optional
+- `[ ]` Move definitions and implementation to own files?
+- `[ ]` linter ci/cd?
 
-BUGS:
-    unhalt (once halted, can't unhalt)
-
-meetings
-    git/github review
-
-unrelated
-    linter ci/cd?
-
-phases
-    - instruction implementation
-    - stretch
-        logic
-        l2 cache (RAM)
-        forwarding
-        functional units, superscaling
-        compiler
+# Phases
+- `[ ]` instruction implementation
+- `[ ]` stretch
+    - `[ ]` logic
+    - `[ ]` l2 cache (RAM)
+    - `[ ]` forwarding
+    - `[ ]` functional units, superscaling
+    - `[ ]` compiler
 
 Contributors
 - chrisbcarl, chriscarl-sjsu

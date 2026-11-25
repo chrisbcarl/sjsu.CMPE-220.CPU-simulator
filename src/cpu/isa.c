@@ -12,9 +12,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "common.h"  // BUFFER0
+#include "common.h"  // COMMON_BUFFER_0
 #include "isa.h"
 
+/**
+ * Array of opcode_info meta description
+ *  {
+ *      "mnemonic string"
+ *      NONE, R-type, I-type, J-type,
+ *      flags affected, Z|O|C
+ *      should immediate by sign extended?
+ *      true - is this meta description valid? always true, because the holes of ISA_TABLE are not valid
+ *  }
+ */
 const isa_opcode_info ISA_TABLE[OPCODES] = {
     [0x00] = {"HALT", FMT_NONE, FLAG_NONE, false, true},
     [0x01] = {"NOP", FMT_NONE, FLAG_NONE, false, true},
@@ -26,6 +36,13 @@ const isa_opcode_info ISA_TABLE[OPCODES] = {
 };
 
 bool isa_is_valid(uint8_t opcode) {
+    /**
+     * Return whether an 8-bit number is a valid opcode within our ISA.
+     *
+     * @param opcode - uint8_t - 8 bit opcode
+     * @return - bool - this 8-bit number is or isn't legit
+     */
+
     switch (opcode) {
         // none
         case OP_HALT:
@@ -76,6 +93,12 @@ bool isa_is_valid(uint8_t opcode) {
 }
 
 isa_instruction* isa_instruction_constructor() {
+    /**
+     * @authors Chris Carl
+     * isa_instruction constructor/initializer
+     * @return - isa_instruction* - NULL or the real deal
+     */
+
     isa_instruction* isa_i = malloc(sizeof(isa_instruction));
     isa_i->op = 0;
     isa_i->rd = 0;
@@ -87,6 +110,15 @@ isa_instruction* isa_instruction_constructor() {
 }
 
 isa_instruction* isa_decode(uint32_t word) {
+    /**
+     * @authors Chris Carl
+     * Given a 32-bit number, get back an isa_instruction struct pointer
+     *  ex) isa_decode(0x71312000) returns {op=0x71, rd=3, rs1=1, rs2=2, imm=0, addr=0}
+     *  ex) isa_decode(0x4430DEAD) returns {op=0x74, rd=3, rs1=0, rs2=X, imm=0xDEAD, addr=0}
+     *
+     * @param word - uint32_t - 32-bit number or binary instruction
+     * @return - isa_instruction* - NULL or the real deal
+     */
     uint8_t opcode = (word >> ISA_OPCODE_SHIFT) & ISA_OPCODE_MASK;
     if (!isa_is_valid(opcode)) return NULL;
 
@@ -134,24 +166,45 @@ isa_instruction* isa_decode(uint32_t word) {
     return isa_i;
 }
 
-uint32_t isa_encode(isa_instruction inst) {
-    isa_opcode_info info = ISA_TABLE[inst.op];
+uint32_t isa_encode(isa_instruction* inst) {
+    /**
+     * @authors Chris Carl
+     * Given an isa_instruction struct pointer, get back a number for that binary instruction.
+     *  ex) isa_decode({op=0x71, rd=3, rs1=1, rs2=2, imm=0, addr=0})      returns 0x71312000
+     *  ex) isa_decode({op=0x74, rd=3, rs1=0, rs2=X, imm=0xDEAD, addr=0}) returns 0x4430DEAD
+     *
+     * @param inst - isa_instruction* - isa_instruction struct pointer
+     * @return - uint32_t - number for that binary instruction
+     */
+
+    isa_opcode_info info = ISA_TABLE[inst->op];
 
     uint32_t binary = 0;
     if (info.fmt == FMT_R) {
-        binary = inst.op << ISA_OPCODE_SHIFT | inst.rd << ISA_RD_SHIFT | inst.rs1 << ISA_RS1_SHIFT | inst.rs2 << ISA_RS2_SHIFT; // 0-11 unused
+        binary = inst->op << ISA_OPCODE_SHIFT | inst->rd << ISA_RD_SHIFT | inst->rs1 << ISA_RS1_SHIFT | inst->rs2 << ISA_RS2_SHIFT; // 0-11 unused
     } else if (info.fmt == FMT_I) {
-        binary = inst.op << ISA_OPCODE_SHIFT | inst.rd << ISA_RD_SHIFT | inst.rs1 << ISA_RS1_SHIFT | inst.imm;
+        binary = inst->op << ISA_OPCODE_SHIFT | inst->rd << ISA_RD_SHIFT | inst->rs1 << ISA_RS1_SHIFT | inst->imm;
     } else if (info.fmt == FMT_J) {
-        binary = inst.op << ISA_OPCODE_SHIFT | inst.addr;
+        binary = inst->op << ISA_OPCODE_SHIFT | inst->addr;
     } else {
-        binary = inst.op << ISA_OPCODE_SHIFT;
+        binary = inst->op << ISA_OPCODE_SHIFT;
     }
 
     return binary;
 }
 
 const char* isa_mnemonic(uint8_t opcode) {
+    /**
+     * @authors Chris Carl
+     * Given some 8-bit number, get back what our ISA says is its "mnemonic" or the "instruction class" in assembly
+     *  ex) isa_mnemonic(0x00) returns "HALT"
+     *  ex) isa_mnemonic(0x71) returns "ADD"
+     * NOTE: typically you'll be using an isa_instruction struct to get a word's opcode and format enum
+     *
+     * @param opcode - uint8_t - 8-bit number, hopefully valid
+     * @return - const char* - NULL or a string to print
+     */
+    if (!isa_is_valid(opcode)) return NULL;
     switch (opcode) {
         case (OP_HALT): return "HALT";
         case (OP_NOP): return "NOP";
@@ -192,6 +245,18 @@ const char* isa_mnemonic(uint8_t opcode) {
 }
 
 const char* isa_operands(uint8_t opcode, uint8_t instruction_format) {
+    /**
+     * @authors Chris Carl
+     * Given this opcode, what should its operands look like?
+     * You get back a formattable string of operands.
+     *  ex) isa_operands(0x71, FMT_R) = "R%u, R%u, R%u"
+     *  ex) isa_operands(0x44, FMT_I) = "R%u, %u"
+     * NOTE: typically you'll be using an isa_instruction struct to get a word's opcode and format enum
+     *
+     * @param - uint8_t - opcode
+     * @param - uint8_t - instruction_format (FMT_NONE, FMT_R, FMT_I, FMT_J)
+     * @return - const char*
+     */
     switch (instruction_format) {
         case (FMT_NONE): return "";
         case (FMT_R): {
@@ -249,48 +314,65 @@ void isa_disassemble(uint32_t word, char* buf, size_t buflen)
     }
 }
 
-void isa_disassemble_2(uint32_t word, char* buf, size_t buflen) {
+void isa_disassemble_2(uint32_t word, char* buffer, size_t buffer_size) {
+    /**
+     * @authors Chris Carl
+     * Disassemble: number to ASM string
+     * Given some binary instruction as a number, fill up a character buffer with what the ASM string is supposed to be
+     *
+     * @param word - uint32_t - the binary instruction as a number
+     * @param buffer - char* - some character array you want to fill with the ASM instruction
+     * @param buffer_size - size_t - how big is the char array you sent? bust be larger than ASM instruction
+     */
     isa_instruction* isa_i = isa_decode(word);
     isa_opcode_info info = ISA_TABLE[isa_i->op];
     const char* mnemonic = isa_mnemonic(isa_i->op);
     const char* operands = isa_operands(isa_i->op, info.fmt);
-    size_t i = 0; while (i < BUFLEN && BUFFER0[i] != '\0') {BUFFER0[i] = '\0'; i += 1;}
-    i = 0; while (i < BUFLEN && BUFFER1[i] != '\0') {BUFFER1[i] = '\0'; i += 1;}
+    size_t i = 0; while (i < COMMON_BUFFER_LEN && COMMON_BUFFER_0[i] != '\0') {COMMON_BUFFER_0[i] = '\0'; i += 1;}
+    i = 0; while (i < COMMON_BUFFER_LEN && COMMON_BUFFER_1[i] != '\0') {COMMON_BUFFER_1[i] = '\0'; i += 1;}
 
     if (info.fmt == FMT_NONE) {
-        sprintf(BUFFER1, "%s", mnemonic);
+        sprintf(COMMON_BUFFER_1, "%s", mnemonic);
     } else {
-        sprintf(BUFFER0, "%s %s", mnemonic, operands);
+        // fill up COMMON_BUFFER_0 with a format string like "ADD R%u, R%u, R%u"
+        sprintf(COMMON_BUFFER_0, "%s %s", mnemonic, operands);
+
+        // fill up COMMON_BUFFER_1 with that format string formatted with actual values for rd, rs1, imm, addr, etc.
         switch (info.fmt) {
             case (FMT_R): {
-                sprintf(BUFFER1, BUFFER0, isa_i->rd, isa_i->rs1, isa_i->rs2);
+                sprintf(COMMON_BUFFER_1, COMMON_BUFFER_0, isa_i->rd, isa_i->rs1, isa_i->rs2);
                 break;
             }
             case (FMT_I): {
                 if (isa_i->op == OP_LOAD)
-                    sprintf(BUFFER1, BUFFER0, isa_i->rd, isa_i->imm, isa_i->rs1);
+                    sprintf(COMMON_BUFFER_1, COMMON_BUFFER_0, isa_i->rd, isa_i->imm, isa_i->rs1);
                 else if (isa_i->op == OP_STORE)
-                    sprintf(BUFFER1, BUFFER0, isa_i->imm, isa_i->rd, isa_i->rs1);
+                    sprintf(COMMON_BUFFER_1, COMMON_BUFFER_0, isa_i->imm, isa_i->rd, isa_i->rs1);
                 else if (isa_i->op == OP_LI)
-                    sprintf(BUFFER1, BUFFER0, isa_i->rd, isa_i->imm);
+                    sprintf(COMMON_BUFFER_1, COMMON_BUFFER_0, isa_i->rd, isa_i->imm);
                 else if (isa_i->op == OP_LUI)
-                    sprintf(BUFFER1, BUFFER0, isa_i->rd, isa_i->imm);
+                    sprintf(COMMON_BUFFER_1, COMMON_BUFFER_0, isa_i->rd, isa_i->imm);
                 else
                     // the branchers
-                    sprintf(BUFFER1, BUFFER0, isa_i->rd, isa_i->rs1, isa_i->imm);
+                    sprintf(COMMON_BUFFER_1, COMMON_BUFFER_0, isa_i->rd, isa_i->rs1, isa_i->imm);
                 break;
             }
             case (FMT_J): {
-                sprintf(BUFFER1, BUFFER0, isa_i->addr);
+                sprintf(COMMON_BUFFER_1, COMMON_BUFFER_0, isa_i->addr);
                 break;
             }
             default: break;  // not possible
         }
     }
-    strncpy(buf, BUFFER1, buflen - 1);
+    // finally copy the formatted string COMMON_BUFFER_1 into the container the user needs
+    strncpy(buffer, COMMON_BUFFER_1, buffer_size - 1);
 }
 
 void print_isa_table() {
+    /**
+     * @authors Chris Carl
+     * We've written up isa.md. Can we reproduce it exactly? That's the goal here.
+     */
     printf("|Instr  |Syntax              |Type|jmp|ops|alu|ins|Opcode|Flags|\n");
     printf("|---    |---                 |--- |---|---|---|---|---   |---  |\n");
     for (uint16_t opcode = 0; opcode < OPCODES; opcode++) {

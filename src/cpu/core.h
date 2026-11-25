@@ -19,7 +19,7 @@
 
 #define RAMSIZE 1024
 
-extern uint32_t* ram;
+extern uint32_t* RAM;
 
 typedef struct IF {
     uint32_t pc;
@@ -117,25 +117,24 @@ typedef struct M_W_bus {
 extern M_W_bus MWbus;
 
 int core_setup();
-int cycle();
+void core_reset();
+int core_cycle();
 int core_teardown();
 
-// Move definitions and implementation to own files
+// TODO: Move definitions and implementation to own files?
 int fetch();
 int decode();
 int execute();
+uint8_t alu_flags_deassert(uint8_t flags);
+uint8_t alu_flags_assert(uint32_t rd, uint32_t rs1, uint32_t rs2, uint8_t flags);
 int memory();
 int writeBack();
 
 int mem_access();
-
-void flags_deassert(uint8_t* flags);
-void flags_assert(uint32_t* rd, uint32_t* rs1, uint32_t* rs2, uint8_t* flags);
-
-void core_dump(uint32_t cycle, uint32_t total);
-void reset();
-int run(uint32_t clocks, bool dump_every_cycle, bool break_on_halt, uint32_t addresses_in_dump);
 uint32_t get_register_value(uint8_t reg_target);
 uint8_t get_flags();
 void set_register_value(uint8_t reg_target, uint32_t value);
 void set_flags(uint8_t value);
+
+void core_dump(uint32_t cycle, uint32_t total_addresses);
+int core_run(uint32_t clocks, bool no_dumps, bool dump_every_clock, bool break_on_halt, uint32_t addresses_around_pc);

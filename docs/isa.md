@@ -7,17 +7,34 @@
 |2026-11-20|Sriharsha Edukulla|Added ADD, POP and LOAD validation and disassembly after review|
 |2026-11-22|Chris Carl        |Sorted by opcode to compare with `test_isa.c`                  |
 |2026-11-23|Chris Carl        |Added 'implemented' column and New Instruction.                |
+|2026-11-25|Chris Carl        |Updated the instructions for new instruction addition          |
 
 32-bit instructions, 16 registers (`R0`–`R15`), destination leftmost. Source of truth: [`src/cpu/isa.h`](../src/cpu/isa.h).
 
 # New Instruction?
 Implement in these areas:
 - [`src/cpu/isa.c`](../src/cpu/isa.c)
-    - ISA_TABLE
-    - isa_operands
-    - isa_disassemble_2
+    - `ISA_TABLE`: explain what string it should return for the mnemonic, its format, and whether its flags are altered
+    - `isa_operands` / `isa_disassemble_2`: just double check that the format for your specific mnemonic is handled in the switch.
+        - if you need to add something, do so in `isa_operands` first which affects `isa_disassemble_2`
 - [`test/isa/test_isa.c`](../test/isa/test_isa.c)
-    - valid_instructions
+    - `valid_instructions` add examples of instructions and what their word should be.
+        - *NOTE:* just as much a test case for the simulator as it is for the developer
+- [`src/cpu/core.c`](../src/cpu/core.c)
+    - `decode`: will definitely need to be logically altered to accomodate your new instruction.
+        - just modify what you need to and run the test cases. that ensures whatever logic change you create doesnt break anyone else's work.
+        - if it does alter memory, make sure you set the control signals here
+    - `execute`: if your instruction is arithmetic or logical, you'll *definitely* need to modify at least the ALU switch statement.
+    - `memory`: if your instruction alters memory
+        - *NOTE:* you shouldn't *have* to modify it. Odds are the only modifications you need are in `decode`
+    - `writeback`: if your instruction alters registers
+        - *NOTE:* you shouldn't *have* to modify it. Odds are the only modifications you need are in `decode`
+- [`test/unit-tests/test_programs.c`](../test/unit-tests/test_programs.c)
+    - main under `tps[]`
+        - create a new test program that runs through some examples of your instructions.
+        - make sure to create different test programs for checking the range of flags and input options
+- [`src/main.c`](../src/main.c)
+    - got a really spicy program? make that the default it loads with!
 
 
 ## Instruction formats
