@@ -3,6 +3,7 @@
  * 2026-11-20 - Sriharsha Edukulla - test_isa.c - ADD, POP and LOAD examples from PR review
  * 2026-11-22 - Chris Carl - test_isa.c - isa overhaul in prep for the instructions that we're implementing, need to check that they're done correctly
  * 2026-11-23 - Chris Carl - test_isa.c - added LI, LUI, ADD
+ * 2026-11-25 - Sriharsha Edukulla - restored opcode and buffer checks (#67)
  *
  * Build and run from the repository root:
  * mkdir -p bin
@@ -21,18 +22,19 @@
 typedef struct {
     uint32_t word;
     const char* text;
+    bool legacy_supported;
 } disassembly_case;
 
 // Literal words let us check the bit layout without relying on isa_encode.
 static const disassembly_case valid_instructions[] = {
-    {0x00000000, "HALT"},
-    {0x01000000, "NOP"},
-    {0x71123000, "ADD R1, R2, R3"},
-    {0x71DEF000, "ADD R13, R14, R15"},
-    {0x21C00000, "POP R12"},
-    {0x40FD0045, "LOAD R15, 69(R13)"},
-    {0x43A06969, "LI R10, 26985"},
-    {0x44306969, "LUI R3, 26985"},
+    {0x00000000, "HALT", true},
+    {0x01000000, "NOP", true},
+    {0x71123000, "ADD R1, R2, R3", true},
+    {0x71DEF000, "ADD R13, R14, R15", true},
+    {0x21C00000, "POP R12", true},
+    {0x40FD0045, "LOAD R15, 69(R13)", true},
+    {0x43A06969, "LI R10, 26985", false},
+    {0x44306969, "LUI R3, 26985", false},
 };
 size_t valid_instruction_count = sizeof(valid_instructions) / sizeof(valid_instructions[0]);
 static const uint32_t invalid_instructions[] = {
@@ -82,29 +84,25 @@ static void check_disassembly(uint32_t word, const char* expected) {
     }
 }
 
-int test_sriharsha(void) {
-    for (unsigned int opcode = 0; opcode < 256; opcode++) {
-        bool expected = false;
-        for (size_t i = 0; i < valid_instruction_count; i++) {
-            if ((valid_instructions[i].word >> 24) == opcode) {
-                expected = true;
-                break;
-            }
-        }
-        if (isa_is_valid((uint8_t)opcode) != expected) {
-            fprintf(stderr, "Wrong validity for opcode 0x%02X\n", opcode);
-            failures++;
-        }
-        if (!expected) {
-            uint32_t word = ((uint32_t)opcode << 24) | 0x123456;
-            char invalid[32];
-            snprintf(invalid, sizeof(invalid), "UNSUPPORTED 0x%08" PRIX32, word);
-            check_disassembly(word, invalid);
+static void test_sriharsha(void) {
+    fprintf(stdout, "    INFO: test_sriharsha() - legacy disassembly and buffer sizes\n");
+    bool legacy_supported[OPCODES] = {false};
+    for (size_t i = 0; i < valid_instruction_count; i++) {
+        const disassembly_case* example = &valid_instructions[i];
+        if (example->legacy_supported) {
+            legacy_supported[example->word >> ISA_OPCODE_SHIFT] = true;
+            check_disassembly(example->word, example->text);
         }
     }
 
-    for (size_t i = 0; i < valid_instruction_count; i++) {
-        check_disassembly(valid_instructions[i].word, valid_instructions[i].text);
+    // The legacy formatter falls back even for valid opcodes it doesn't format.
+    for (unsigned int opcode = 0; opcode < OPCODES; opcode++) {
+        if (!legacy_supported[opcode]) {
+            uint32_t word = ((uint32_t)opcode << ISA_OPCODE_SHIFT) | 0x123456;
+            char fallback[32];
+            snprintf(fallback, sizeof(fallback), "UNSUPPORTED 0x%08" PRIX32, word);
+            check_disassembly(word, fallback);
+        }
     }
 
     // Unused bits should not become extra operands.
@@ -125,21 +123,32 @@ int test_sriharsha(void) {
     isa_disassemble(0x00000000, NULL, 0);
     isa_disassemble(0x01000000, NULL, 16);
     isa_disassemble(0x40FD0045, NULL, 16);
-
-    if (failures != 0) {
-        fprintf(stderr, "%u ISA checks failed\n", failures);
-        return failures;
-    }
-    printf("ISA checks passed: %zu instructions, unsupported opcodes and buffer sizes\n", valid_instruction_count);
-    return EXIT_SUCCESS;
 }
 
 int test_isa_is_valid(void) {
-    fprintf(stdout, "    INFO: test_isa_is_valid()\n");
-    for (size_t i = 0; i < valid_instruction_count; i++) {
-        uint32_t word = valid_instructions[i].word;
-        const char* text = valid_instructions[i].text;
-        assert(isa_is_valid(word >> 24), "ERROR: isa_is_valid - valid_instructions[%lu] = '%s' invalid!\n", i, text);
+    // Use the opcode bytes from docs/isa.md so this checks the full ISA.
+    static const uint8_t defined_opcodes[] = {
+        0x00, 0x01, 0x80,                         // HALT, NOP, RET
+        0x20, 0x21,                               // stack
+        0xA0, 0xA1, 0xA2,                         // jumps
+        0x40, 0x41, 0x42, 0x43, 0x44,             // memory, move, immediates
+        0x50, 0x51,                               // unary ALU
+        0x70, 0x71, 0x72, 0x73, 0x74, 0x75,       // arithmetic
+        0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x7F, // logic and shifts
+        0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5,       // branches
+    };
+    bool expected[OPCODES] = {false};
+    for (size_t i = 0; i < sizeof(defined_opcodes) / sizeof(defined_opcodes[0]); i++) {
+        expected[defined_opcodes[i]] = true;
+    }
+
+    fprintf(stdout, "    INFO: test_isa_is_valid() - all %u opcode values\n", (unsigned int)OPCODES);
+    for (unsigned int opcode = 0; opcode < OPCODES; opcode++) {
+        if (isa_is_valid((uint8_t)opcode) != expected[opcode]) {
+            fprintf(stderr, "Wrong validity for opcode 0x%02X (expected %s)\n",
+                    opcode, expected[opcode] ? "valid" : "invalid");
+            failures++;
+        }
     }
     return EXIT_SUCCESS;
 }
@@ -237,9 +246,9 @@ int test_isa_disassemble_2(void) {
 
 int main(void) {
     fprintf(stdout, "test_isa\n");
-    // test_sriharsha();  // BUG: I think it's treating everything thats not in the valid array as an invalid...
     print_isa_table();
     test_isa_is_valid();
+    test_sriharsha();
     test_isa_decode();
     test_isa_encode();
     test_isa_mnemonic();
@@ -248,7 +257,7 @@ int main(void) {
 
     if (failures != 0) {
         fprintf(stderr, "FAILED! %u failures!\n", failures);
-        return failures;
+        return EXIT_FAILURE;
     }
     printf("PASSED on %lu valid instructions, %lu invalid instructions!\n", valid_instruction_count, invalid_instruction_count);
     return EXIT_SUCCESS;
