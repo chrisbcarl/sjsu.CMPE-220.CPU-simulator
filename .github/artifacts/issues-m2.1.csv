@@ -25,3 +25,4 @@ r1,feature: ieee-753,,,,"Add floating point math!","Thats gonna be pretty tricky
 r1,docs: doxygen,,,,"Create a doxygen compliant browsable docs. Host it on github.","As it says on the tin."
 m2,bug: halt,,,,"Once you've halted, you can never unhalt...","As it says on the tin."
 m2,bug: test_sriharsha,,sriharsha8000,,"is test_sriharsha operating as intended?","As it says on the tin."
+m2,feature: auto-run bin files,,,,"what it says on the tin","only makes sense to implement once we've got the branch and arithmetic funcs"
