@@ -230,8 +230,8 @@ int test_isa_operands(void) {
     return EXIT_SUCCESS;
 }
 
-int test_isa_disassemble_2(void) {
-    fprintf(stdout, "    INFO: test_isa_disassemble_2()\n");
+int test_isa_disassemble(void) {
+    fprintf(stdout, "    INFO: test_isa_disassemble()\n");
     for (size_t i = 0; i < valid_instruction_count; i++) {
         uint32_t word = valid_instructions[i].word;
         const char* text = valid_instructions[i].text;
@@ -253,7 +253,7 @@ int main(void) {
     test_isa_encode();
     test_isa_mnemonic();
     test_isa_operands();
-    test_isa_disassemble_2();
+    test_isa_disassemble();
 
     if (failures != 0) {
         fprintf(stderr, "FAILED! %u failures!\n", failures);
