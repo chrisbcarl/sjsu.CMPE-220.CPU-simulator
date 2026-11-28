@@ -16,7 +16,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "common.h"  // BUFFER0, assert
+#include "common.h"  // COMMON_BUFFER_0, assert
 #include "isa.h"
 
 typedef struct {
@@ -166,6 +166,7 @@ int test_isa_decode(void) {
         uint32_t word = invalid_instructions[i];
         isa_instruction* instr = isa_decode(word);
         assert(instr == NULL, "ERROR: isa_decode - invalid_instructions[%lu] = 0x%x is supposed to be invalid!\n", i, word);
+        free(instr);
     }
 
     return EXIT_SUCCESS;
@@ -179,7 +180,7 @@ int test_isa_encode(void) {
         isa_instruction* instr = isa_decode(word);
         printf("        valid_instrs[%lu], '%s' - op: 0x%x | rd: 0x%x | rs1: 0x%x | rs2: 0x%x | imm: 0x%x | addr: 0x%x\n", i, text, instr->op, instr->rd, instr->rs1, instr->rs2, instr->imm, instr->addr);
 
-        uint32_t word2 = isa_encode(*instr);
+        uint32_t word2 = isa_encode(instr);
         assert(word == word2, "ERROR: isa_encode - decoded word[%lu] 0x%x != encoded 0x%x!\n", i, word, word2);
         free(instr);
     }
@@ -197,14 +198,14 @@ int test_isa_mnemonic(void) {
 
         // copy text's mnemonic to buffer, compare to mnemonic
         size_t n = strlen(text);
-        BUFFER0[n] = '\0';  // NOTE: give BUFFER0 a null termination otherwise compiler freaks out
-        strncpy(BUFFER0, text, n);
+        COMMON_BUFFER_0[n] = '\0';  // NOTE: give COMMON_BUFFER_0 a null termination otherwise compiler freaks out
+        strncpy(COMMON_BUFFER_0, text, n);
         int idx_space = indexof((char*)text, ' ');
 
         // cannot use ternary statement due to int/size_t conversions
         if (idx_space == -1) n = strlen(mnemonic);
         else n = idx_space - 1;
-        assert(strncmp(mnemonic, BUFFER0, n) == 0, "ERROR: isa_mnemonic - valid[%lu] '%s' != '%s'!\n", i, BUFFER0, mnemonic);
+        assert(strncmp(mnemonic, COMMON_BUFFER_0, n) == 0, "ERROR: isa_mnemonic - valid[%lu] '%s' != '%s'!\n", i, COMMON_BUFFER_0, mnemonic);
     }
 
     return EXIT_SUCCESS;
@@ -229,15 +230,15 @@ int test_isa_operands(void) {
     return EXIT_SUCCESS;
 }
 
-int test_isa_disassemble_2(void) {
-    fprintf(stdout, "    INFO: test_isa_disassemble_2()\n");
+int test_isa_disassemble(void) {
+    fprintf(stdout, "    INFO: test_isa_disassemble()\n");
     for (size_t i = 0; i < valid_instruction_count; i++) {
         uint32_t word = valid_instructions[i].word;
         const char* text = valid_instructions[i].text;
 
-        isa_disassemble_2(word, BUFFER0, BUFLEN);
-        printf("        0x%x -> '%s'\n", word, BUFFER0);
-        assert(strcmp(BUFFER0, text) == 0, "ERROR: isa_disassemble_2 - valid[%lu] '%s' != '%s'!\n", i, text, BUFFER0);
+        isa_disassemble_2(word, COMMON_BUFFER_0, COMMON_BUFFER_LEN);
+        printf("        0x%x -> '%s'\n", word, COMMON_BUFFER_0);
+        assert(strcmp(COMMON_BUFFER_0, text) == 0, "ERROR: isa_disassemble_2 - valid[%lu] '%s' != '%s'!\n", i, text, COMMON_BUFFER_0);
     }
 
     return EXIT_SUCCESS;
@@ -252,7 +253,7 @@ int main(void) {
     test_isa_encode();
     test_isa_mnemonic();
     test_isa_operands();
-    test_isa_disassemble_2();
+    test_isa_disassemble();
 
     if (failures != 0) {
         fprintf(stderr, "FAILED! %u failures!\n", failures);

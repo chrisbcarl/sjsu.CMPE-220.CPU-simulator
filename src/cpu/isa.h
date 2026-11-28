@@ -21,6 +21,7 @@
  * 2026-11-17 - Sriharsha Edukulla - isa.h - documented initial HALT/NOP support (#26)
  * 2026-11-22 - Chris Carl - isa.h - added OPCODES, isa_instruction_constructor, isa_decode is a pointer, isa_disassemble_2, and print_isa_table
  * 2026-11-23 - Chris Carl - isa.h - added FLAG_*_OF
+ * 2026-11-23 - Chris Carl - isa.h - added INS_* numbers so each mnemonic is mapped to its instruction number
  *
  * Bare essentials: machine constants, field layout (shift/mask for
  * encode/decode), opcode fields and the opcode enum.
@@ -165,6 +166,58 @@ typedef enum {
     OP_BGE = ISA_OP(1, 3, 1, 5),   // 0xF5 [doc]   I: if rd >= rs1  (signed)
 } isa_opcode;
 
+typedef enum {
+    /* ----- control: 0 operands ----- */
+    INS_HALT = 0,
+    INS_NOP = 1,
+    INS_RET = 0,
+
+    /* ----- stack: 1 operand ----- */
+    INS_PUSH = 0,
+    INS_POP = 1,
+
+    /* ----- jumps: 1 operand ----- */
+    INS_JUMP = 0,
+    INS_JR  = 1,
+    INS_CALL = 2,
+
+    /* ----- memory / move: 2 operands, no ALU ----- */
+    INS_LOAD = 0,
+    INS_STORE = 1,
+    INS_MOV = 2,
+    INS_LI = 3,
+    INS_LUI = 4,
+
+    /* ----- unary ALU: 2 operands ----- */
+    INS_NOT = 0,
+    INS_NEG = 1,
+
+    /* ----- arithmetic: 3 operands ----- */
+    INS_CMP = 0,
+    INS_ADD = 1,
+    INS_SUB = 2,
+    INS_MUL = 3,
+    INS_DIV = 4,
+    INS_ADDI = 5,
+
+    /* ----- logic: 3 operands, ins >= 9 ----- */
+    INS_AND = 9,
+    INS_OR = 10,
+    INS_XOR = 11,
+    INS_SL = 12,
+    INS_SR = 13,
+    INS_SLA = 14,
+    INS_SRA = 15,
+
+    /* ----- branches: compare rd with rs1, then PC ← imm (absolute, 0..65535) ----- */
+    INS_BEQ = 0,
+    INS_BNQ = 1,
+    INS_BLT = 2,
+    INS_BGT = 3,
+    INS_BLE = 4,
+    INS_BGE = 5,
+} isa_ins;
+
 /* ---------- formats: how to read bits 23..0 ---------- */
 typedef enum {
     FMT_NONE,  // no operands (HALT, NOP, RET)
@@ -223,7 +276,7 @@ extern const isa_opcode_info ISA_TABLE[OPCODES];
 bool isa_is_valid(uint8_t opcode);
 isa_instruction* isa_instruction_constructor();
 isa_instruction* isa_decode(uint32_t word);                            // word → fields
-uint32_t isa_encode(isa_instruction inst);                     // fields → word
+uint32_t isa_encode(isa_instruction* inst);                     // fields → word
 const char* isa_mnemonic(uint8_t opcode);                         // "ADD" or NULL
 const char* isa_operands(uint8_t opcode, uint8_t instruction_format);   // switch on the format, FMT_I, FMT_J, etc.
 void isa_disassemble(uint32_t word, char* buf, size_t buflen);
